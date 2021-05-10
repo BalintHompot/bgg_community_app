@@ -9,6 +9,7 @@ export default class GameListItem extends React.PureComponent {
     return (
       <View style={styles.itemContainer}>
         <Image
+
           source={{ uri: this.props.thumbnail }}
           style={{ width: 100, height: 80, borderRadius: 5 }}
         />

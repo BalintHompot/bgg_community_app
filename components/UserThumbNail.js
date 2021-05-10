@@ -6,7 +6,6 @@ import GameListItemHorizontal from './GameListItemHorizontal'
 import { SearchBar, Icon } from 'react-native-elements'
 
 import styles from '../shared/styles'
-import { useSafeArea } from 'react-native-safe-area-view'
 
 
 export default UserThumbNail = props => {

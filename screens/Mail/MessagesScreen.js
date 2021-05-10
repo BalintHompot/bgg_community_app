@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useGlobal } from 'reactn'
 
-import SafeAreaView from 'react-native-safe-area-view'
 import { createStackNavigator } from '@react-navigation/stack'
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -167,7 +166,8 @@ const MessagesScreen = props => {
 
   ]
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
+    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+
       <View style={{ backgroundColor: styleconstants.bggpurple, padding: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontFamily: styleconstants.primaryFontBold, color: 'white', fontSize: 16 }}>Folder:  </Text>
         <Dropdown
@@ -229,6 +229,7 @@ const MessagesScreen = props => {
                 }}
 
               />
+
             </View>
           }
         </View>
@@ -236,7 +237,7 @@ const MessagesScreen = props => {
 
       }
 
-    </SafeAreaView>
+    </View>
   )
 
 }

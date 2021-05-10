@@ -162,8 +162,9 @@ const AllTimeList = (props) => {
             >
 
                 <Image
-                    source={{ uri: props.item.image["src@2x"] }}
-                    style={{ width: 130, height: 130, borderRadius: 5 }}
+                    resizeMode={'contain'}
+                    source={{ uri: props.item.item.imageSets.square100["src@2x"] }}
+                    style={{ width: 130, height: 130, borderRadius: 5, }}
                 />
                 <View style={{ position: 'absolute', top: 100, left: 12 }}>
                     <Hexagon color={getRatingColor(props.item.rating)} rating={props.item.rating} />

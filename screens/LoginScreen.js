@@ -3,7 +3,6 @@ import Sentry from 'sentry-expo'
 import { View, Text, StyleSheet, Linking, Dimensions, ImageBackground, Image, AsyncStorage, Platform, KeyboardAvoidingView, UIManager, ScrollView } from 'react-native'
 import { Input, Button } from 'react-native-elements'
 import { showMessage } from 'react-native-flash-message'
-import SafeAreaView from 'react-native-safe-area-view'
 import { createStackNavigator } from '@react-navigation/stack'
 import { logIn, getUserId } from '../shared/auth'
 import { getNumUnread } from '../shared/FetchWithCookie'
@@ -158,12 +157,15 @@ const LoginScreen = props => {
   let InnerScreen = <View style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
 
     <View style={{ alignItems: 'center', padding: 10, flex: 1, backgroundColor: 'white' }}>
-      <Image source={require('../assets/bgg_background_1.png')} style={{ position: 'absolute', bottom: 0, height: height, width: 300, left: 0 }} />
-      <Image source={require('../assets/bgg_background_2.png')} style={{ position: 'absolute', bottom: 0, height: height / 5, width: 300, right: 0 }} />
+      <Image resizeMode={'contain'}
+        source={require('../assets/bgg_background_1.png')} style={{ position: 'absolute', bottom: 0, height: height, width: 300, left: 0 }} />
+      <Image resizeMode={'contain'}
+        source={require('../assets/bgg_background_2.png')} style={{ position: 'absolute', bottom: 0, height: height / 5, width: 300, right: 0 }} />
 
       <KeyboardAvoidingView style={{ width: '100%', flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null} >
         <View style={{ justifyContent: 'flex-end', alignItems: 'center', flex: 1 }}>
-          <Image source={require('../assets/BGG-Logo-removebg.png')} style={{ width: 150, height: 150, marginTop: 100, marginBottom: 20 }} />
+          <Image resizeMode={'contain'}
+            source={require('../assets/BGG-Logo-removebg.png')} style={{ width: 150, height: 150, marginTop: 100, marginBottom: 20 }} />
 
           <View style={{ backgroundColor: 'rgba(1,1,1,0.5)', padding: 20, borderRadius: 15, width: '100%' }}>
 

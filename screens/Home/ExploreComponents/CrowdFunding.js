@@ -94,7 +94,9 @@ const CrowdFunding = (props) => {
             >
 
                 <Image
-                    source={{ uri: props.item.images.mediacard.src }}
+                    resizeMode={'contain'}
+
+                    source={{ uri: props.item.images.square100['src@2x'] }}
                     style={{ width: 130, height: 130, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}
                 />
                 <View style={{ width: props.item.progress >= 100 ? 130 : 1.3 * props.item.progress, height: 5, backgroundColor: '#02857a' }}></View>

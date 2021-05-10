@@ -93,6 +93,8 @@ const ProfileCard = props => {
               <View style={{ flexDirection: 'column', justifyContent: 'center', marginRight: 20 }}>
                 {profileDetails.user.avatarlink[0].$.value == "N/A" ?
                   <Image
+                    resizeMode={'contain'}
+
                     style={{ width: 64, height: 64 }}
                     source={{
                       uri:
@@ -100,6 +102,8 @@ const ProfileCard = props => {
                     }} />
                   :
                   <Image
+                    resizeMode={'contain'}
+
                     style={{ width: 64, height: 64 }}
                     source={{
                       uri:

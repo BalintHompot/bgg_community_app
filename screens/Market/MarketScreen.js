@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { View, Text, InteractionManager, ScrollView, FlatList, LayoutAnimation, Keyboard } from 'react-native'
 import { Button } from 'react-native-elements'
 import { createStackNavigator } from '@react-navigation/stack'
-import SafeAreaView from 'react-native-safe-area-view'
 import * as Sentry from 'sentry-expo'
 
 import styleconstants from '../../shared/styles/styleconstants'
@@ -75,7 +74,7 @@ const MarketScreen = ({ navigation, route }) => {
 
 
     return (
-        <SafeAreaView>
+        <View>
             <Dropdown
                 dropdownOffset={{
                     top: 0,
@@ -104,7 +103,7 @@ const MarketScreen = ({ navigation, route }) => {
                     setCurrency(f)
                 }}
             />
-        </SafeAreaView>
+        </View>
     )
 
 }

@@ -106,7 +106,9 @@ const Hotness = (props) => {
             >
 
                 <Image
-                    source={{ uri: props.item.images.mediacard.src }}
+                    resizeMode={'contain'}
+
+                    source={{ uri: props.item.images.square100['src@2x'] }}
                     style={{ width: 130, height: 130, borderRadius: 5 }}
                 />
                 <View style={{ position: 'absolute', top: 110, left: 10 }}>

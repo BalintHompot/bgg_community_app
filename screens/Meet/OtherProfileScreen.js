@@ -3,7 +3,6 @@ import Sentry from 'sentry-expo'
 import { View, Text, StyleSheet, Linking, ScrollView, Image } from 'react-native'
 import { Input, Button } from 'react-native-elements'
 import { showMessage } from 'react-native-flash-message'
-import SafeAreaView from 'react-native-safe-area-view'
 import { createStackNavigator } from '@react-navigation/stack'
 import { logIn, getUserId } from '../../shared/auth'
 import CollectionScreen from './OtherUserCollection'
@@ -62,12 +61,12 @@ const ProfileScreen = props => {
 
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
+    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
 
       <ProfileCard userName={userName} navigation={props.navigation.dangerouslyGetParent()} />
       <CollectionScreen insideScreen={true} lists={props.route.params.lists} />
 
-    </SafeAreaView>
+    </View>
   )
 
 }

@@ -89,7 +89,7 @@ const HomeList = (props) => {
             //console.log("home list is", homeList.status)
             if (homeList.status === 200) {
                 homeList.json().then(homeListJson => {
-                    //console.log("home list json", homeListJson)
+                    console.log("home list json", homeListJson)
                     setHomeList(homeListJson.games)
                     setTitle(homeListJson.title)
                     setSubTitle(homeListJson.description)
@@ -132,7 +132,9 @@ const HomeList = (props) => {
             >
 
                 <Image
-                    source={{ uri: props.item.image["src@2x"] }}
+                    resizeMode={'contain'}
+
+                    source={{ uri: props.item.item.imageSets.square100["src@2x"] }}
                     style={{ width: 130, height: 130, borderRadius: 5 }}
                 />
                 <View style={{ position: 'absolute', top: 100, left: 12 }}>
