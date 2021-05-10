@@ -154,18 +154,13 @@ const LoginScreen = props => {
     }
   }
 
-  let InnerScreen = <View style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
+  let InnerScreen = <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
 
-    <View style={{ alignItems: 'center', padding: 10, flex: 1, backgroundColor: 'white' }}>
-      <Image resizeMode={'contain'}
-        source={require('../assets/bgg_background_1.png')} style={{ position: 'absolute', bottom: 0, height: height, width: 300, left: 0 }} />
-      <Image resizeMode={'contain'}
-        source={require('../assets/bgg_background_2.png')} style={{ position: 'absolute', bottom: 0, height: height / 5, width: 300, right: 0 }} />
+    <View style={{ alignItems: 'center', padding: 10, flex: 1, backgroundColor: 'transparent' }}>
 
       <KeyboardAvoidingView style={{ width: '100%', flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null} >
         <View style={{ justifyContent: 'flex-end', alignItems: 'center', flex: 1 }}>
-          <Image resizeMode={'contain'}
-            source={require('../assets/BGG-Logo-removebg.png')} style={{ width: 150, height: 150, marginTop: 100, marginBottom: 20 }} />
+          <Image source={require('../assets/BGG-Logo-removebg.png')} style={{ width: 150, height: 150, marginTop: 100, marginBottom: 20 }} />
 
           <View style={{ backgroundColor: 'rgba(1,1,1,0.5)', padding: 20, borderRadius: 15, width: '100%' }}>
 
@@ -232,23 +227,29 @@ const LoginScreen = props => {
     </View>
   </View>
 
+  let InnerWrapped
+
 
   if (Platform.OS === 'ios') {
-    return (
-      <View>
-        {InnerScreen}
-      </View>)
+    InnerWrapped = <View>
+      {InnerScreen}
+    </View>
+
   } else {
-    return (
-
-
-      <ScrollView>
-        {InnerScreen}
-      </ScrollView>
-
-
-    )
+    InnerWrapped = <ScrollView>
+      {InnerScreen}
+    </ScrollView>
   }
+
+  return (
+    <View style={{ backgroundColor: 'white' }}>
+      <Image source={require('../assets/bgg_background_1.png')} style={{ position: 'absolute', bottom: 0, height: height, width: 300, left: 0 }} />
+      <Image source={require('../assets/bgg_background_2.png')} style={{ position: 'absolute', bottom: 0, height: height / 3, width: 100, right: 0 }} />
+
+      {InnerWrapped}
+
+    </View>
+  )
 
 
 
