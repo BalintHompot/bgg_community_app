@@ -19,7 +19,7 @@ import { fetchJSON } from '../../shared/HTTP'
 import { getRatingColor } from '../../shared/collection'
 
 import styles from './styles'
-import styleconstants from '../../shared/styles/styleconstants'
+import styleconstants, { layoutAnimation } from '../../shared/styles/styleconstants'
 
 const GameScreen = ({ navigation, route }) => {
   const { game } = route.params
@@ -42,7 +42,7 @@ const GameScreen = ({ navigation, route }) => {
   // })
 
   useEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    layoutAnimation()
 
     const objectId = game.objectId
     if (details === null) {

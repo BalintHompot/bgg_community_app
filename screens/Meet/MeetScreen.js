@@ -7,7 +7,7 @@ import SafeAreaView from 'react-native-safe-area-view'
 import * as Sentry from 'sentry-expo'
 
 import { Icon } from 'react-native-elements'
-import styleconstants from '../../shared/styles/styleconstants'
+import styleconstants, { layoutAnimation } from '../../shared/styles/styleconstants'
 import styles from '../../shared/styles'
 import { SearchBar } from 'react-native-elements'
 var DomParser = require('react-native-html-parser').DOMParser
@@ -219,7 +219,7 @@ const MeetScreen = ({ navigation, route }) => {
 
     function rerenderUserListPeriodically() {
         if (filterStringSync == "") {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            layoutAnimation()
             setLocalUserComponents(getComponentsForPage(pageNumToRender))
         }
 
@@ -227,7 +227,7 @@ const MeetScreen = ({ navigation, route }) => {
 
             if (usersFetchFinishedCount > 0 && usersFetchFinishedCount >= usersToFetchCount) {
                 if (filterStringSync == "") {
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    layoutAnimation()
                     setLocalUserComponents(getComponentsForPage(pageNumToRender))
                 }
                 setUserComponentConstructionInProgress(false)
@@ -241,7 +241,7 @@ const MeetScreen = ({ navigation, route }) => {
 
 
     async function fetchLocalUsers(country, city) {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        layoutAnimation()
         setUserComponentConstructionInProgress(true)
         rerenderUserListPeriodically()
 
@@ -308,7 +308,7 @@ const MeetScreen = ({ navigation, route }) => {
                     <Button
                         icon={<Icon name="search" type="ionicons" size={20} color={'white'} />}
                         onPress={() => {
-                            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                            layoutAnimation()
                             setSearchOpen(!searchOpen)
                         }}
                         buttonStyle={globalStyles.headerIconButton}
@@ -321,7 +321,7 @@ const MeetScreen = ({ navigation, route }) => {
                 proceedFetchingLocalUsers()
             } else {
                 pageNumToRender = 0
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                layoutAnimation()
                 setLocalUserComponents(getComponentsForPage(pageNumToRender))
             }
             setCity(citySync)
@@ -336,7 +336,7 @@ const MeetScreen = ({ navigation, route }) => {
 
     const stopFetch = () => {
         //controller.abort()
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        layoutAnimation()
         setUserComponentConstructionInProgress(false)
         setLocalUserComponents([])
         orderedFetchedUsers = []
@@ -393,10 +393,10 @@ const MeetScreen = ({ navigation, route }) => {
             }
 
 
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            layoutAnimation()
             setLocalUserComponents(filteredUsers)
         } else {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            layoutAnimation()
             setLocalUserComponents(getComponentsForPage(pageNumToRender))
         }
 
@@ -479,10 +479,10 @@ const MeetScreen = ({ navigation, route }) => {
                                 setFilterstring(t)
                                 filterStringSync = t.toLowerCase()
                                 if (t !== "") {
-                                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                    layoutAnimation()
                                     setStartSearchButtonVisible(true)
                                 } else {
-                                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                    layoutAnimation()
                                     setStartSearchButtonVisible(false)
                                     setLocalUserComponents(getComponentsForPage(pageNumToRender))
                                 }
@@ -490,7 +490,7 @@ const MeetScreen = ({ navigation, route }) => {
                             onClearText={(t) => {
                                 setFilterstring("")
                                 filterStringSync = t.toLowerCase()
-                                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                layoutAnimation()
                                 setStartSearchButtonVisible(false)
                                 setLocalUserComponents(getComponentsForPage(pageNumToRender))
                             }}
@@ -555,7 +555,7 @@ const MeetScreen = ({ navigation, route }) => {
                                                     size={20}
                                                     onPress={() => {
                                                         if (pageNumToRender > 0) {
-                                                            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                            layoutAnimation()
                                                             setLocalUserComponents(getComponentsForPage(pageNumToRender - 1))
                                                             pageNumToRender -= 1
                                                             scrollUp()
@@ -574,7 +574,7 @@ const MeetScreen = ({ navigation, route }) => {
                                                     size={20}
                                                     onPress={() => {
                                                         if (pageNumToRender < (maxPageNumToRender - 1)) {
-                                                            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                            layoutAnimation()
                                                             setLocalUserComponents(getComponentsForPage(pageNumToRender + 1))
                                                             pageNumToRender += 1
                                                             scrollUp()

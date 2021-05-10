@@ -17,7 +17,7 @@ import GameList from '../../../components/GameList'
 
 import globalStyles from '../../../shared/styles'
 import { logger } from '../../../shared/debug'
-import styleconstants from '../../../shared/styles/styleconstants'
+import styleconstants, { layoutAnimation } from '../../../shared/styles/styleconstants'
 import { showMessage } from 'react-native-flash-message'
 
 const Hotness = (props) => {
@@ -89,7 +89,7 @@ const Hotness = (props) => {
 
 
     useEffect(() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        layoutAnimation()
 
         if (hotList.length === 0) {
             fetchHotList()

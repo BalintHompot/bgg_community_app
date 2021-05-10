@@ -17,7 +17,7 @@ import GameList from '../../../components/GameList'
 
 import globalStyles from '../../../shared/styles'
 import { logger } from '../../../shared/debug'
-import styleconstants from '../../../shared/styles/styleconstants'
+import styleconstants, { layoutAnimation } from '../../../shared/styles/styleconstants'
 import { showMessage } from 'react-native-flash-message'
 
 const CrowdFunding = (props) => {
@@ -77,7 +77,7 @@ const CrowdFunding = (props) => {
 
 
     useEffect(() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        layoutAnimation()
 
         if (cfList.length === 0) {
             fetchCfList()

@@ -17,7 +17,7 @@ import GameList from '../../../components/GameList'
 
 import globalStyles from '../../../shared/styles'
 import { logger } from '../../../shared/debug'
-import styleconstants from '../../../shared/styles/styleconstants'
+import styleconstants, { layoutAnimation } from '../../../shared/styles/styleconstants'
 import { showMessage } from 'react-native-flash-message'
 import { getRatingColor } from '../../../shared/collection'
 import { Dropdown } from 'react-native-material-dropdown-v2'
@@ -145,7 +145,7 @@ const AllTimeList = (props) => {
     }
 
     useEffect(() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        layoutAnimation()
 
         if (!selectedCat) {
             fetchallTimeIDs()
