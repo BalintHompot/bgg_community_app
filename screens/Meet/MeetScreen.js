@@ -536,67 +536,65 @@ const MeetScreen = ({ navigation, route }) => {
                             <View style={styles.emptyView}>
 
                             </View> :
-                            <SafeAreaView>
-                                <ScrollView automaticallyAdjustContentInsets={true} ref={scrollRef}>
-                                    <FlatList
-                                        data={localUserComponents}
-                                        renderItem={({ item }) => {
-                                            return <UserThumbNail otherGames={item.otherGames} inUserWishlist={item.inUserWants} offerList={item.offerList} othersWishlist={item.othersWishlist} userName={item.userName} navigation={navigation} />
-                                        }}
-                                    />
-                                    <View>
-                                        {filterStringSync === "" ?
+                            <ScrollView automaticallyAdjustContentInsets={true} ref={scrollRef}>
+                                <FlatList
+                                    data={localUserComponents}
+                                    renderItem={({ item }) => {
+                                        return <UserThumbNail otherGames={item.otherGames} inUserWishlist={item.inUserWants} offerList={item.offerList} othersWishlist={item.othersWishlist} userName={item.userName} navigation={navigation} />
+                                    }}
+                                />
+                                <View>
+                                    {filterStringSync === "" ?
 
-                                            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', marginTop: 20, alignItems: 'center' }}>
+                                        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', marginTop: 20, alignItems: 'center' }}>
 
-                                                <Icon
-                                                    name="caretleft"
-                                                    color={pageNumToRender > 0 ? styleconstants.bggorange : 'lightgrey'}
-                                                    type="antdesign"
-                                                    containerStyle={{ margin: 4 }}
-                                                    size={20}
-                                                    onPress={() => {
-                                                        if (pageNumToRender > 0) {
-                                                            layoutAnimation()
-                                                            setLocalUserComponents(getComponentsForPage(pageNumToRender - 1))
-                                                            pageNumToRender -= 1
-                                                            scrollUp()
-                                                        }
+                                            <Icon
+                                                name="caretleft"
+                                                color={pageNumToRender > 0 ? styleconstants.bggorange : 'lightgrey'}
+                                                type="antdesign"
+                                                containerStyle={{ margin: 4 }}
+                                                size={20}
+                                                onPress={() => {
+                                                    if (pageNumToRender > 0) {
+                                                        layoutAnimation()
+                                                        setLocalUserComponents(getComponentsForPage(pageNumToRender - 1))
+                                                        pageNumToRender -= 1
+                                                        scrollUp()
+                                                    }
 
-                                                    }}
-                                                />
+                                                }}
+                                            />
 
-                                                <Text>{(pageNumToRender + 1).toString() + "/" + maxPageNumToRender}</Text>
+                                            <Text>{(pageNumToRender + 1).toString() + "/" + maxPageNumToRender}</Text>
 
-                                                <Icon
-                                                    name="caretright"
-                                                    color={pageNumToRender < (maxPageNumToRender - 1) ? styleconstants.bggorange : 'lightgrey'}
-                                                    type="antdesign"
-                                                    containerStyle={{ margin: 4 }}
-                                                    size={20}
-                                                    onPress={() => {
-                                                        if (pageNumToRender < (maxPageNumToRender - 1)) {
-                                                            layoutAnimation()
-                                                            setLocalUserComponents(getComponentsForPage(pageNumToRender + 1))
-                                                            pageNumToRender += 1
-                                                            scrollUp()
-                                                        }
+                                            <Icon
+                                                name="caretright"
+                                                color={pageNumToRender < (maxPageNumToRender - 1) ? styleconstants.bggorange : 'lightgrey'}
+                                                type="antdesign"
+                                                containerStyle={{ margin: 4 }}
+                                                size={20}
+                                                onPress={() => {
+                                                    if (pageNumToRender < (maxPageNumToRender - 1)) {
+                                                        layoutAnimation()
+                                                        setLocalUserComponents(getComponentsForPage(pageNumToRender + 1))
+                                                        pageNumToRender += 1
+                                                        scrollUp()
+                                                    }
 
-                                                    }}
+                                                }}
 
-                                                />
+                                            />
 
-                                            </View>
+                                        </View>
 
-                                            : null}
+                                        : null}
 
-                                    </View>
-                                    <View style={{ height: 200 }}></View>
+                                </View>
+                                <View style={{ height: 200 }}></View>
 
-                                </ScrollView>
+                            </ScrollView>
 
 
-                            </SafeAreaView>
                         }
                     </View>
                     :
