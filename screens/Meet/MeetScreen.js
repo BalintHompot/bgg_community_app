@@ -121,7 +121,6 @@ const MeetScreen = ({ navigation, route }) => {
             if ((gamesFiltered.length > 0)) {
                 nonEmptyUsersCount += 1
                 maxPageNumToRender = Math.ceil(nonEmptyUsersCount / COMPONENTS_PER_PAGE)
-                console.log("max page : ", maxPageNumToRender)
 
                 let otherWl = gamesFetched.filter((game) => game.status.wishlist === '1')
 
@@ -166,7 +165,6 @@ const MeetScreen = ({ navigation, route }) => {
 
 
     async function getUserLists(userNameList, inputCity, inputCountry) {
-        console.log('user list', userNameList)
         for (var lInd in userNameList) {
             /// check if we are still looking for the same city
             if (fetchingOnGoing && inputCity === citySync && inputCountry === countrySync) {
@@ -338,25 +336,29 @@ const MeetScreen = ({ navigation, route }) => {
         //controller.abort()
         layoutAnimation()
         setUserComponentConstructionInProgress(false)
+
+        fetchingOnGoing = false
+
+    }
+
+    const startFetch = () => {
+        ///first reset
         setLocalUserComponents([])
         orderedFetchedUsers = []
-        fetchingOnGoing = false
         usersPageIndex = 1
         usersToFetchCount = 0
         usersFetchFinishedCount = 0
         nonEmptyUsersCount = 0
         pageNumToRender = 0
         maxPageNumToRender = 1
-    }
 
-    const startFetch = () => {
+        // then start fetching
         fetchingOnGoing = true
 
         fetchLocalUsers(countrySync, citySync)
     }
 
     const getComponentsForPage = (p) => {
-        console.log("ordered list", orderedFetchedUsers.length)
         var arr = orderedFetchedUsers.slice(p * COMPONENTS_PER_PAGE, (p + 1) * COMPONENTS_PER_PAGE)
         return [...new Set(arr)];
     }
