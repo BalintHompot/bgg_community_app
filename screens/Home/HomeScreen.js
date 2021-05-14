@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements'
 import { createStackNavigator } from '@react-navigation/stack'
 import ExploreScreen from './Explore'
 import MoreScreen from './MoreScreen'
-import MeetScreen from '../../screens/Meet/MeetScreen'
+import MeetScreen from './MoreComponents/Meet/MeetScreen'
 import ConversationScreen from '../../screens/Mail/ConversationScreen'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -21,7 +21,7 @@ const Tab = createMaterialTopTabNavigator();
 const StackTabWrapper = createStackNavigator()
 const Stack = createStackNavigator()
 import styleconstants from '../../shared/styles/styleconstants'
-import PreviewScreen from '../../screens/PreviewScreen'
+import PreviewScreen from './MoreComponents/PreviewScreen'
 
 const tabNav = props => {
     return <Tab.Navigator

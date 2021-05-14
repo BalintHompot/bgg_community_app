@@ -7,30 +7,22 @@ import SafeAreaView from 'react-native-safe-area-view'
 import * as Sentry from 'sentry-expo'
 
 import { Icon } from 'react-native-elements'
-import styleconstants, { layoutAnimation } from '../../shared/styles/styleconstants'
-import styles from '../../shared/styles'
+import styleconstants, { layoutAnimation } from '../../../../shared/styles/styleconstants'
+import styles from '../../../../shared/styles'
 import { SearchBar } from 'react-native-elements'
 var DomParser = require('react-native-html-parser').DOMParser
-import { fetchCollectionFromBGG } from '../../shared/collection'
+import { fetchCollectionFromBGG } from '../../../../shared/collection'
 import { BarIndicator } from 'react-native-indicators';
 import { RateLimit } from "async-sema";
 import { useFocusEffect } from '@react-navigation/native';
 
 
-import GameScreen from '../GameScreen'
-import LogPlay from '../Plays/Log'
-import ListPlays from '../Plays/List'
-import GameSearch from '../GameSearch'
-import GameAddTo from '../GameAddTo'
-
-import UserThumbNail from '../../components/UserThumbNail'
-import GameStack from '../GameStack'
+import UserThumbNail from '../../../../components/UserThumbNail'
+import GameStack from '../../../GameStack'
 import ProfileStack from './OtherProfileScreen'
-import ConversationScreen from '../Mail/ConversationScreen'
 
-import globalStyles from '../../shared/styles'
-import { logger } from '../../shared/debug'
-import { fetchRaw } from '../../shared/HTTP'
+import globalStyles from '../../../../shared/styles'
+import { fetchRaw } from '../../../../shared/HTTP'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const COMPONENTS_PER_PAGE = 8

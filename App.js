@@ -25,14 +25,10 @@ import FlashMessage from 'react-native-flash-message'
 
 import ProfileScreen from './screens/OwnProfileScreen'
 import LoginScreen from './screens/LoginScreen'
-import OwnedScreen from './screens/Collection/OwnedScreen'
 import CollectionScreen from './screens/Collection/CollectionScreen'
 import HomeScreen from './screens/Home/HomeScreen'
-import MeetScreen from './screens/Meet/MeetScreen'
 import MessagesScreen from './screens/Mail/MessagesScreen'
-import WishlistScreen from './screens/Collection/WishlistScreen'
-import PreviewScreen from './screens/PreviewScreen'
-import MarketScreen from './screens/Market/MarketScreen'
+
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 

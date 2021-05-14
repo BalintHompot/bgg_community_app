@@ -1,4 +1,4 @@
-import { priorities, halls, availability } from '../../shared/data'
+import { priorities, halls, availability } from '../../../../shared/data'
 
 const applyCompanyFilters = (filters, companies) => {
   let filteredItems = companies

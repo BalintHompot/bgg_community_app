@@ -3,18 +3,17 @@ import PropTypes from 'prop-types'
 import { createStackNavigator } from '@react-navigation/stack'
 import { InteractionManager } from 'react-native'
 
-import GameScreen from '../GameScreen'
-import GameAddTo from '../GameAddTo'
-import LogPlay from '../Plays/Log'
-import PreviewFilters from '../../components/PreviewFilters'
-import PreviewList from '../../components/PreviewList'
-import PreviewEdit from '../../components/PreviewEdit'
-import PreviewMap from '../../components/PreviewMap'
+import GameScreen from '../../../GameScreen'
+import GameAddTo from '../../../GameAddTo'
+import LogPlay from '../../../Plays/Log'
+import PreviewFilters from '../../../../components/PreviewFilters'
+import PreviewList from '../../../../components/PreviewList'
+import PreviewEdit from '../../../../components/PreviewEdit'
+import PreviewMap from '../../../../components/PreviewMap'
 
 import { buildSections } from './sections'
 
 import { PREVIEW_FULL_NAME } from 'react-native-dotenv'
-import { points } from '../../shared/points'
 
 class PreviewListScreen extends React.Component {
   state = {
