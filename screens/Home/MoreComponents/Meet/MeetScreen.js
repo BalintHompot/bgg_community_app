@@ -19,7 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import UserThumbNail from '../../../../components/UserThumbNail'
 import GameStack from '../../../GameStack'
-import ProfileStack from './OtherProfileScreen'
+import ProfileStack from '../OtherProfileScreen'
 
 import globalStyles from '../../../../shared/styles'
 import { fetchRaw } from '../../../../shared/HTTP'
@@ -351,8 +351,7 @@ const MeetScreen = ({ navigation, route }) => {
     }
 
     const getComponentsForPage = (p) => {
-        var arr = orderedFetchedUsers.slice(p * COMPONENTS_PER_PAGE, (p + 1) * COMPONENTS_PER_PAGE)
-        return [...new Set(arr)];
+        return arr = orderedFetchedUsers.slice(p * COMPONENTS_PER_PAGE, (p + 1) * COMPONENTS_PER_PAGE)
     }
 
     function checkUserForFilter(user) {

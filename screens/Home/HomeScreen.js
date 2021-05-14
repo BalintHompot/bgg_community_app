@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack'
 import ExploreScreen from './Explore'
 import MoreScreen from './MoreScreen'
 import MeetScreen from './MoreComponents/Meet/MeetScreen'
+import GameGroupScreen from './MoreComponents/GameGroup/GameGroupScreen'
+
 import ConversationScreen from '../../screens/Mail/ConversationScreen'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -84,6 +86,8 @@ export default props => {
             <Stack.Screen options={{ headerShown: false }} name="GameStack" component={GameStack} />
             <Stack.Screen options={{ headerShown: false }} name="Preview" component={PreviewScreen} />
             <Stack.Screen options={{ headerShown: false }} name="Gamers nearby" component={MeetScreen} />
+            <Stack.Screen options={{ headerShown: false }} name="Game groups" component={GameGroupScreen} />
+
             <Stack.Screen name="Compose" component={ConversationScreen} options={({ route }) => ({
 
                 title: route.params.subject,
