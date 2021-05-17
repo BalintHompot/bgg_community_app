@@ -60,7 +60,7 @@ const MoreScreen = (props) => {
                     props.navigation.navigate("Gamers nearby")
                 }}
             >
-                <Image source={require('../../assets/gamenight.jpeg')} style={{ height: 259, width: width - 12, borderRadius: 15, margin: 6 }} />
+                <Image source={require('../../assets/findnearby.png')} style={{ height: 259, width: width - 12, borderRadius: 15, margin: 6 }} />
                 <View style={{
                     position: 'absolute', bottom: 6, left: 6,
 

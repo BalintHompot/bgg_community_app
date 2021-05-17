@@ -20,6 +20,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import UserThumbNail from '../../../../components/UserThumbNail'
 import GameStack from '../../../GameStack'
 import ProfileStack from '../OtherProfileScreen'
+import ForumScreen from './ForumScreen'
+import ReplyScreen from './ReplyScreen'
 
 import globalStyles from '../../../../shared/styles'
 import { fetchXML } from '../../../../shared/HTTP'
@@ -51,7 +53,11 @@ let initialFetchStarted = false
 let fetchedGameGroups = []
 
 const GameGroupThumbnail = props => {
-    return <TouchableOpacity style={{ padding: 20, backgroundColor: 'white', margin: 3 }}>
+    return <TouchableOpacity style={{ padding: 20, backgroundColor: 'white', margin: 3 }}
+        onPress={() => {
+            props.navigation.navigate("Thread", { 'thread': props.thread })
+        }}
+    >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <Text style={{ fontFamily: styleconstants.primaryFontBold, color: 'dodgerblue' }}>{props.thread.author}</Text>
             <View style={{ width: '30%' }}>
@@ -60,7 +66,7 @@ const GameGroupThumbnail = props => {
             </View>
 
         </View>
-        <Text style={{ fontFamily: styleconstants.primaryFont, fontSize: 17 }}>{props.thread.subject}</Text>
+        <Text style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 17 }}>{props.thread.subject}</Text>
         <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row' }}>
             <Icon
                 name="chat"
@@ -227,13 +233,16 @@ const GameGroupScreen = ({ navigation, route }) => {
                             <ScrollView automaticallyAdjustContentInsets={true} ref={scrollRef}>
                                 {gameGroups.length < 1 ?
                                     <View style={{ height: 200, justifyContent: 'center', alignItems: 'center' }}>
-                                        <Text>No results on this page</Text>
-
+                                        {fetchingOnGoing ?
+                                            <Text>Loading...</Text>
+                                            :
+                                            <Text>No results on this page</Text>
+                                        }
                                     </View> :
                                     <FlatList
                                         data={gameGroups}
                                         renderItem={({ item }) => {
-                                            return <GameGroupThumbnail thread={item.$} />
+                                            return <GameGroupThumbnail thread={item.$} navigation={navigation} />
                                         }}
                                     />
                                 }
@@ -290,6 +299,7 @@ const GameGroupScreen = ({ navigation, route }) => {
 
 
                         </View>
+
                         :
                         <View style={{ height: 600, justifyContent: 'center', alignItems: 'center' }}>
                             <Text>Detecting your location...</Text>
@@ -330,7 +340,38 @@ const GameGroupScreen = ({ navigation, route }) => {
                 </View>
             </View>
 
+            {global.location &&
 
+
+                <View style={{ position: 'absolute', bottom: 100, right: 20, flexDirection: 'row' }}>
+                    <View style={{
+                        backgroundColor: styleconstants.bggorange, padding: 10, shadowColor: '#000', borderRadius: 5
+
+                    }}>
+                        <TouchableOpacity>
+
+                            <Icon name="notification" type="entypo" size={20} color={'white'} containerStyle={{ margin: 4 }} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{
+                        backgroundColor: styleconstants.bggorange, padding: 10, marginLeft: 15, shadowColor: '#000', borderRadius: 5
+
+                    }}>
+                        <TouchableOpacity>
+                            <Icon
+                                name="plus"
+                                color='white'
+                                type="entypo"
+                                containerStyle={{ margin: 4 }}
+                                size={20}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+            }
             {fetchingOnGoing &&
                 <View style={{ position: 'absolute', top: 80, width: '100%', justifyContent: 'center' }} >
                     <BarIndicator size={15} color={styleconstants.bggorange} count={5} />
@@ -365,6 +406,11 @@ export default () => (
         <Stack.Screen options={{ headerShown: true }} name="Game Groups" component={GameGroupScreen} />
         <Stack.Screen options={{ headerShown: false }} name="GameStack" component={GameStack} />
         <Stack.Screen options={{ headerShown: false }} name="User" component={ProfileStack} />
+        <Stack.Screen options={{ headerShown: true }} name="Thread" component={ForumScreen} options={({ route }) => ({
+
+            title: "Thread " + route.params.thread.id,
+        })} />
+        <Stack.Screen options={{ headerShown: true }} name="Reply" component={ReplyScreen} />
 
     </Stack.Navigator>
 

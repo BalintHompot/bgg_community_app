@@ -1,3 +1,4 @@
+
 import { SENTRY_CONFIG } from 'react-native-dotenv'
 import * as Sentry from 'sentry-expo'
 
