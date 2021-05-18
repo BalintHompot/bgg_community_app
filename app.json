@@ -24,7 +24,7 @@
     "name": "BGG",
     "owner": "briandquinn",
     "slug": "bggca",
-    "version": "0.4.0",
+    "version": "0.5.2",
     "description": "Board Game Geek community app",
     "ios": {
       "bundleIdentifier": "io.bdq.bggca",
