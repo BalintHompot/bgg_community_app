@@ -2,13 +2,13 @@
   "expo": {
     "sdkVersion": "40.0.0",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/poweredby.png",
       "backgroundColor": "#3F3A60",
       "resizeMode": "cover"
     },
-    "icon": "./assets/BGG-Logo.png",
+    "icon": "./assets/BGG-community.png",
     "privacy": "public",
-    "githubUrl": "https://github.com/BDQ/bgg_community_app",
+    "githubUrl": "https://github.com/bgg-unofficial/bgg_community_app",
     "hooks": {
       "postPublish": [
         {
@@ -21,7 +21,7 @@
         }
       ]
     },
-    "name": "BGG",
+    "name": "BGG community",
     "owner": "briandquinn",
     "slug": "bggca",
     "version": "0.5.3",
@@ -34,7 +34,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#3F3A60",
-        "backgroundImage": "./assets/BGG-Logo.png"
+        "backgroundImage": "./assets/BGG-community.png"
       },
       "package": "io.bdq.bggca.droid",
       "versionCode": 3,
