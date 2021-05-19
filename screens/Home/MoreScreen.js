@@ -78,6 +78,7 @@ const MoreScreen = (props) => {
                 </View>
 
             </TouchableOpacity>
+            {/*
             <TouchableOpacity
                 onPress={() => {
                     props.navigation.navigate("Game groups")
@@ -101,6 +102,7 @@ const MoreScreen = (props) => {
                 </View>
 
             </TouchableOpacity>
+            */}
             <TouchableOpacity
                 onPress={() => {
                     props.navigation.navigate("Preview")

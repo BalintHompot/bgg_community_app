@@ -24,11 +24,12 @@
     "name": "BGG",
     "owner": "briandquinn",
     "slug": "bggca",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "description": "Board Game Geek community app",
     "ios": {
       "bundleIdentifier": "io.bdq.bggca",
-      "userInterfaceStyle": "light"
+      "userInterfaceStyle": "light",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -36,6 +37,7 @@
         "backgroundImage": "./assets/BGG-Logo.png"
       },
       "package": "io.bdq.bggca.droid",
+      "versionCode": 3,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "CAMERA"
