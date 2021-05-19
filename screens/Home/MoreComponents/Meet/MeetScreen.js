@@ -19,7 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import UserThumbNail from '../../../../components/UserThumbNail'
 import GameStack from '../../../GameStack'
-import ProfileStack from './OtherProfileScreen'
+import ProfileStack from '../OtherProfileScreen'
 
 import globalStyles from '../../../../shared/styles'
 import { fetchRaw } from '../../../../shared/HTTP'
@@ -77,11 +77,21 @@ const MeetScreen = ({ navigation, route }) => {
     let [filterString, setFilterstring] = useState("")
     let [startSearchButtonVisible, setStartSearchButtonVisible] = useState(false)
 
-    const [collection] = useGlobal('collection')
+    const [collectionFetchedAt, setCollectionFetchedAt] = useGlobal(
+        'collectionFetchedAt'
+    )
+    const [loggedIn] = useGlobal('loggedIn')
+    var [collection] = useGlobal('collection')
+
+    const fetchCollection = useDispatch('fetchCollection')
     const wishlist = collection.filter(
         game => game.status.wishlist === '1'
     )
 
+    refreshCollection = async () => {
+        await fetchCollection()
+        proceedFetchingLocalUsers()
+    }
 
     const scrollUp = () => {
         scrollRef.current?.scrollTo({
@@ -272,7 +282,12 @@ const MeetScreen = ({ navigation, route }) => {
     }
 
     function proceedFetchingLocalUsers() {
-        if (global.location) {
+        const aWeekAgo = new Date().getTime() - 1000 * 60 * 60 * 24 * 7
+
+        if (loggedIn && collectionFetchedAt < aWeekAgo) {
+            refreshCollection()
+        }
+        else if (global.location) {
             setCity(global.location.city)
             citySync = global.location.city
             countrySync = global.location.country
@@ -305,6 +320,7 @@ const MeetScreen = ({ navigation, route }) => {
                     />
                 ),
             })
+
             if (!initialFetchStarted && filterStringSync === "") {
                 fetchingOnGoing = true
                 initialFetchStarted = true
@@ -351,8 +367,7 @@ const MeetScreen = ({ navigation, route }) => {
     }
 
     const getComponentsForPage = (p) => {
-        var arr = orderedFetchedUsers.slice(p * COMPONENTS_PER_PAGE, (p + 1) * COMPONENTS_PER_PAGE)
-        return [...new Set(arr)];
+        return arr = orderedFetchedUsers.slice(p * COMPONENTS_PER_PAGE, (p + 1) * COMPONENTS_PER_PAGE)
     }
 
     function checkUserForFilter(user) {
@@ -582,7 +597,7 @@ const MeetScreen = ({ navigation, route }) => {
                                         : null}
 
                                 </View>
-                                <View style={{ height: 200 }}></View>
+                                <View style={{ height: 350 }}></View>
 
                             </ScrollView>
 
@@ -626,4 +641,3 @@ export default () => (
     </Stack.Navigator>
 
 )
-

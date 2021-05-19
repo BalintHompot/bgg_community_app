@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, Linking, ScrollView, Image } from 'react-native
 import { createStackNavigator } from '@react-navigation/stack'
 import CollectionScreen from './OtherUserCollection'
 
-import ProfileCard from '../../../ProfileCard'
+import ProfileCard from '../../ProfileCard'
 
 
 

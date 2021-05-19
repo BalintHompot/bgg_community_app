@@ -202,7 +202,7 @@ const ProfileCard = props => {
           </View>
 
         </View>
-        : <View style={styles.emptyView}>
+        : <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
 
           <Text>Loading profile...</Text>
         </View>

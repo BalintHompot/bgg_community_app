@@ -78,6 +78,31 @@ const MoreScreen = (props) => {
                 </View>
 
             </TouchableOpacity>
+            {/*
+            <TouchableOpacity
+                onPress={() => {
+                    props.navigation.navigate("Game groups")
+                }}
+            >
+                <Image source={require('../../assets/gamenight.jpeg')} style={{ height: 259, width: width - 12, borderRadius: 15, margin: 6 }} />
+                <View style={{
+                    position: 'absolute', bottom: 6, left: 6,
+
+                }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'column', width: width * 0.7, backgroundColor: 'white', padding: 10 }}>
+                            <Text style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}>Game groups</Text>
+                            <Text style={{ fontFamily: styleconstants.primaryFont, fontSize: 13 }}>Organize or join game groups near your location.</Text>
+                        </View>
+
+                        <TriangleCornerBottomLeft />
+                    </View>
+
+
+                </View>
+
+            </TouchableOpacity>
+            */}
             <TouchableOpacity
                 onPress={() => {
                     props.navigation.navigate("Preview")

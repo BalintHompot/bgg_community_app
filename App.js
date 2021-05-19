@@ -1,3 +1,4 @@
+
 import { SENTRY_CONFIG } from 'react-native-dotenv'
 import * as Sentry from 'sentry-expo'
 
@@ -123,9 +124,6 @@ export default class App extends React.PureComponent {
     /// async fetch collection
     const fetchCollection = useDispatch('fetchCollection')
     fetchCollection()
-
-
-
   }
 
   _renderTabs = () => {
