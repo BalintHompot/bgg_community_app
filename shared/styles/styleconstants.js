@@ -4,6 +4,8 @@ import { LayoutAnimation, Platform } from 'react-native'
 export default {
     bggpurple: '#403c64',
     bggorange: '#ff5001',
+    bggyellow: '#ffa400',
+    bggturquoise: '#63cfe3',
     primaryFont: 'lato',
     primaryFontBold: 'lato-bold'
 
