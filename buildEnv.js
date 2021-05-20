@@ -1,4 +1,4 @@
-const getVar = name => process.env[name] || ''
+const getVar = (name) => process.env[name] || ''
 
 console.log(`
 SENTRY_CONFIG='${getVar('SENTRY_CONFIG')}'

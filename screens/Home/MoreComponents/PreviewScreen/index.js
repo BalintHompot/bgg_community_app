@@ -13,16 +13,14 @@ import PreviewMap from '../../../../components/PreviewMap'
 
 import { buildSections } from './sections'
 
-import { PREVIEW_FULL_NAME } from 'react-native-dotenv'
-
 class PreviewListScreen extends React.Component {
   state = {
-    userSelections: []
+    userSelections: [],
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${PREVIEW_FULL_NAME} (${navigation.getParam('gameCount', '0')})`
+      title: `${PREVIEW_FULL_NAME} (${navigation.getParam('gameCount', '0')})`,
     }
   }
 
@@ -45,7 +43,7 @@ class PreviewListScreen extends React.Component {
       previewLoading = false
 
     if (previewFetchedAt > 0) {
-      ; ({ previewGames, previewCompanies, previewLoading } = this.global)
+      ;({ previewGames, previewCompanies, previewLoading } = this.global)
     }
 
     const { sections, gameCount } = buildSections(
@@ -88,12 +86,12 @@ PreviewListScreen.propTypes = {
     state: PropTypes.shape({
       params: PropTypes.shape({
         reload: PropTypes.func,
-        next: PropTypes.func
-      })
+        next: PropTypes.func,
+      }),
     }),
     navigate: PropTypes.func.isRequired,
-    setParams: PropTypes.func.isRequired
-  }).isRequired
+    setParams: PropTypes.func.isRequired,
+  }).isRequired,
 }
 
 // export default createStackNavigator({
@@ -108,15 +106,17 @@ PreviewListScreen.propTypes = {
 const Stack = createStackNavigator()
 
 export default () => (
-  <Stack.Navigator screenOptions={{
-    headerStyle: {
-      backgroundColor: '#403c64',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-  }}>
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: '#403c64',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}
+  >
     <Stack.Screen name="Previews" component={PreviewListScreen} />
     <Stack.Screen
       name="Game"
