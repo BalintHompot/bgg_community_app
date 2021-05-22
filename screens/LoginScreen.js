@@ -160,7 +160,12 @@ const LoginScreen = props => {
 
       <KeyboardAvoidingView style={{ width: '100%', flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null} >
         <View style={{ justifyContent: 'flex-end', alignItems: 'center', flex: 1 }}>
-          <Image source={require('../assets/BGG-Logo-removebg.png')} style={{ width: 150, height: 150, marginTop: 100, marginBottom: 20 }} />
+          <View style={{ marginTop: 100, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+            <Image source={require('../assets/BGG-community-removebg.png')} style={{ width: 150, height: 150, marginBottom: 10 }} />
+            <Text style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}>Board Game Community App</Text>
+            <Text style={{ fontStyle: 'italic', fontSize: 16 }}>BETA</Text>
+
+          </View>
 
           <View style={{ backgroundColor: 'rgba(1,1,1,0.5)', padding: 20, borderRadius: 15, width: '100%' }}>
 
@@ -210,12 +215,12 @@ const LoginScreen = props => {
         </View>
 
       </KeyboardAvoidingView>
-      <View style={{ marginBottom: '50%' }}>
+      <View style={{ marginBottom: '30%' }}>
         <Text style={{ color: 'black' }}>
           This app is an <Text style={customStyles.strong}>unofficial</Text>{' '}
           {' '}
-            community initiative to build a sharing mobile application
-            for the amazing BoardGameGeek.com site.
+           initiative to build a community application
+            based on the amazing BoardGameGeek.com site.
           </Text>
         <Text></Text>
         <Text style={{ color: 'black' }}>

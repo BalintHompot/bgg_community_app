@@ -109,7 +109,7 @@ export default class App extends React.PureComponent {
 
     await this.attemptBGGLoginInBackground(valueName, valuePassword)
 
-    //global.location = { "city": "Utrecht", "country": "Netherlands" }
+    global.location = { "city": "Utrecht", "country": "Netherlands" }
 
     findCoordinates()
 

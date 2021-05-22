@@ -4,6 +4,8 @@ import { PREVIEW_ID } from 'react-native-dotenv'
 const previewKey = `preview:${PREVIEW_ID}`
 const filtersKey = `${previewKey}:filters`
 
+console.log("Preview key is", previewKey)
+
 export const previewFiltersLoad = async state => {
   const {
     previewFiltersSet,

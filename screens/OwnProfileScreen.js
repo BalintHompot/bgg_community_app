@@ -95,8 +95,8 @@ const ProfileScreen = props => {
             <Text style={{ color: 'black' }}>
               This app is an <Text style={customStyles.strong}>unofficial</Text>{' '}
               {' '}
-              community initiative to build a sharing mobile application
-              for the amazing BoardGameGeek.com site.
+              initiative to build a community application
+            based on the amazing BoardGameGeek.com site.
             </Text>
             <Text></Text>
             <Text style={{ color: 'black' }}>
@@ -104,6 +104,8 @@ const ProfileScreen = props => {
               logo are trademarks of BoardGameGeek, LLC.
               </Text>
           </View>
+
+
 
         </View>
       </ScrollView>

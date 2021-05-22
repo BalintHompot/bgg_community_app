@@ -38,6 +38,8 @@ export const getPreviewUserItems = async (state, dispatch, force) => {
 
   if (force || previewUserSelections.length === 0) {
     const path = `/api/geekpreviewitems/userinfo?previewid=${PREVIEW_ID}`
+    console.log("Fetching preview path", path)
+
     const { items } = await fetchJSON(path)
 
     previewUserSelections = items
