@@ -36,6 +36,8 @@ import { Badge } from 'react-native-elements'
 import { findCoordinates } from './shared/location'
 
 var parseString = require('react-native-xml2js').parseString
+import * as SecureStore from 'expo-secure-store';
+
 
 //bootstraps ReactN global store
 setupStore()
@@ -106,6 +108,25 @@ export default class App extends React.PureComponent {
     let valuePassword = await AsyncStorage.getItem('userPassword')
     //console.log("retrieved password value")
     //console.log(valuePassword)
+
+    //// we need to migrate in the background from async storage to kaychain
+    if (valueName && valuePassword) {
+      console.log("clearing async storage, placing it in securestore")
+      AsyncStorage.removeItem('userName');
+      AsyncStorage.removeItem('userPassword');
+
+
+      SecureStore.setItemAsync('userName', valueName);
+      SecureStore.setItemAsync('userPassword', valuePassword);
+
+
+    } else {
+      console.log("getting from secure store")
+
+      valueName = await SecureStore.getItemAsync('userName');
+      valuePassword = await SecureStore.getItemAsync('userPassword');
+
+    }
 
     await this.attemptBGGLoginInBackground(valueName, valuePassword)
 

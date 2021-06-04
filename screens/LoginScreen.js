@@ -6,6 +6,7 @@ import { showMessage } from 'react-native-flash-message'
 import { createStackNavigator } from '@react-navigation/stack'
 import { logIn, getUserId } from '../shared/auth'
 import { getNumUnread } from '../shared/FetchWithCookie'
+import * as SecureStore from 'expo-secure-store';
 
 
 import styles from '../shared/styles'
@@ -100,8 +101,11 @@ const LoginScreen = props => {
 
   const attemptBGGLogin = async (username, password) => {
     try {
-      AsyncStorage.setItem('userName', username);
-      AsyncStorage.setItem('userPassword', password);
+
+
+      SecureStore.setItemAsync('userName', username);
+      SecureStore.setItemAsync('userPassword', password);
+
       const { success } = await logIn(username, password)
 
       setLoading(false)
@@ -163,7 +167,6 @@ const LoginScreen = props => {
           <View style={{ marginTop: 100, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
             <Image source={require('../assets/BGG-community-removebg.png')} style={{ width: 150, height: 150, marginBottom: 10 }} />
             <Text style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}>Board Game Community App</Text>
-            <Text style={{ fontStyle: 'italic', fontSize: 16 }}>BETA</Text>
 
           </View>
 

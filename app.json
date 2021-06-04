@@ -29,7 +29,7 @@
     "ios": {
       "bundleIdentifier": "io.bdq.bggca",
       "userInterfaceStyle": "light",
-      "buildNumber": "1.0.0"
+      "buildNumber": "3.0.0"
     },
     "android": {
       "adaptiveIcon": {
