@@ -12,6 +12,7 @@ import ProfileCard from './ProfileCard'
 
 import { fetchRaw } from '../shared/HTTP'
 var parseString = require('react-native-xml2js').parseString;
+import * as SecureStore from 'expo-secure-store';
 
 
 const customStyles = StyleSheet.create({
@@ -60,7 +61,10 @@ const ProfileScreen = props => {
   })
 
   const handleLogOut = () => {
-
+    SecureStore.deleteItemAsync('userName')
+    SecureStore.deleteItemAsync('userPassword')
+    global.username = null
+    global.cookie = null
 
     //tells global store we've logged in
     props.navigation.navigate("Login")

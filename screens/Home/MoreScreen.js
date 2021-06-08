@@ -57,6 +57,28 @@ const MoreScreen = (props) => {
         <ScrollView >
             <TouchableOpacity
                 onPress={() => {
+                    props.navigation.navigate("Events nearby")
+                }}
+            >
+                <Image source={require('../../assets/prev.jpg')} style={{ height: 250, width: width - 12, margin: 6, borderRadius: 15 }} />
+                <View style={{
+                    position: 'absolute', bottom: 6, left: 6,
+
+                }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'column', width: width * 0.7, backgroundColor: 'white', padding: 10 }}>
+                            <Text style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}>Events</Text>
+                            <Text style={{ fontFamily: styleconstants.primaryFont, fontSize: 13 }}>Find gaming events near you, or organise one yourself.</Text>
+                        </View>
+
+                        <TriangleCornerBottomLeft />
+                    </View>
+
+
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
                     props.navigation.navigate("Gamers nearby")
                 }}
             >
@@ -125,6 +147,9 @@ const MoreScreen = (props) => {
 
                 </View>
             </TouchableOpacity>
+
+
+
             <View style={{ alignItems: 'flex-end', marginTop: 30 }}>
                 <View style={{ flexDirection: 'row' }}>
                     <TriangleCornerTopRight />

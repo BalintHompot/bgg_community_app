@@ -7,6 +7,7 @@ import ExploreScreen from './Explore'
 import MoreScreen from './MoreScreen'
 import MeetScreen from './MoreComponents/Meet/MeetScreen'
 import GameGroupScreen from './MoreComponents/GameGroup/GameGroupScreen'
+import EventMap from './MoreComponents/EventMap/EventMap'
 
 import ConversationScreen from '../../screens/Mail/ConversationScreen'
 
@@ -87,6 +88,7 @@ export default props => {
             <Stack.Screen options={{ headerShown: false }} name="Preview" component={PreviewScreen} />
             <Stack.Screen options={{ headerShown: false }} name="Gamers nearby" component={MeetScreen} />
             <Stack.Screen options={{ headerShown: false }} name="Game groups" component={GameGroupScreen} />
+            <Stack.Screen options={{ headerShown: false }} name="Events nearby" component={EventMap} />
 
             <Stack.Screen name="Compose" component={ConversationScreen} options={({ route }) => ({
 

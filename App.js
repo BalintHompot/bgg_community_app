@@ -49,7 +49,9 @@ export default class App extends React.PureComponent {
     isReady: false,
     userDetails: null,
     loggedIn: false,
+    skipLogin: false,
   }
+
 
   async attemptBGGLoginInBackground(username, password) {
     if (username && password) {
@@ -128,7 +130,18 @@ export default class App extends React.PureComponent {
 
     }
 
-    await this.attemptBGGLoginInBackground(valueName, valuePassword)
+    if (!(valueName && valuePassword)) {
+      let skipLogin = await SecureStore.getItemAsync('skipLogin');
+      console.log("skip login value", skipLogin)
+      if (skipLogin && skipLogin === 'true') {
+        this.setState({ skipLogin: true })
+      }
+
+    } else {
+      await this.attemptBGGLoginInBackground(valueName, valuePassword)
+
+    }
+
 
     //global.location = { "city": "Utrecht", "country": "Netherlands" }
 
@@ -168,6 +181,8 @@ export default class App extends React.PureComponent {
     const Drawer = createStackNavigator()
 
     const mainTabNav = () => {
+      const loggedIn = this.global.loggedIn
+
       return (
         <Tab.Navigator backBehavior="none" initialRouteName="Home">
           <Tab.Screen
@@ -182,40 +197,47 @@ export default class App extends React.PureComponent {
             })}
           />
 
-          <Tab.Screen
-            name="Geekmail"
-            component={MessagesScreen}
-            options={({ route }) => ({
-              tabBarVisible: getTabBarVisibility(route),
-              tabBarLabel: 'Geekmail',
-              tabBarIcon: ({ color, size }) => (
-                <View>
-                  <Ionicons name="ios-mail-outline" size={size} color={color} />
-                  {global.numUnread > 0 ? (
-                    <Badge
-                      status="error"
-                      containerStyle={{
-                        position: 'absolute',
-                        top: -4,
-                        right: -4,
-                      }}
-                      value={global.numUnread}
-                    />
-                  ) : null}
-                </View>
-              ),
-            })}
-          />
-          <Tab.Screen
-            name="Collection"
-            component={CollectionScreen}
-            options={{
-              tabBarLabel: 'Collection',
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="ios-albums" size={size} color={color} />
-              ),
-            }}
-          />
+          {loggedIn ?
+
+            <Tab.Screen
+              name="Geekmail"
+              component={MessagesScreen}
+              options={({ route }) => ({
+                tabBarVisible: getTabBarVisibility(route),
+                tabBarLabel: 'Geekmail',
+                tabBarIcon: ({ color, size }) => (
+                  <View>
+                    <Ionicons name="ios-mail-outline" size={size} color={color} />
+                    {global.numUnread > 0 ? (
+                      <Badge
+                        status="error"
+                        containerStyle={{
+                          position: 'absolute',
+                          top: -4,
+                          right: -4,
+                        }}
+                        value={global.numUnread}
+                      />
+                    ) : null}
+                  </View>
+                ),
+              })}
+            />
+            : null}
+          {loggedIn ?
+
+            <Tab.Screen
+              name="Collection"
+              component={CollectionScreen}
+              options={{
+                tabBarLabel: 'Collection',
+                tabBarIcon: ({ color, size }) => (
+                  <Ionicons name="ios-albums" size={size} color={color} />
+                ),
+              }}
+            />
+            : null}
+
           {/*
                <Tab.Screen
           name="Share"
@@ -261,17 +283,38 @@ export default class App extends React.PureComponent {
           }}
         />
         */}
-          <Tab.Screen
-            name="ProfileStack"
-            component={ProfileScreen}
-            options={{
-              tabBarLabel: 'Account',
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="ios-person" size={size} color={color} />
-              ),
-            }}
-          />
+          {loggedIn ?
+
+            <Tab.Screen
+              name="ProfileStack"
+              component={ProfileScreen}
+              options={{
+                tabBarLabel: 'Account',
+                tabBarIcon: ({ color, size }) => (
+                  <Ionicons name="ios-person" size={size} color={color} />
+                ),
+              }}
+            />
+            : null}
+
+          {loggedIn ?
+            null :
+            <Tab.Screen
+              name="Login"
+              component={LoginScreen}
+
+              options={{
+                tabBarVisible: false,
+                tabBarLabel: 'Login',
+                tabBarIcon: ({ color, size }) => (
+                  <Ionicons name="log-in-outline" size={size} color={color} />
+                ),
+              }}
+            />
+          }
+
         </Tab.Navigator>
+
       )
     }
 
@@ -291,7 +334,7 @@ export default class App extends React.PureComponent {
     return (
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName={this.state.userDetails ? 'MainTabWrapper' : 'Login'}
+          initialRouteName={this.state.userDetails || this.state.skipLogin ? 'MainTabWrapper' : 'Login'}
         >
           <Drawer.Screen
             options={{ headerShown: false }}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useGlobal, useEffect, useState, useDispatch } from 'reactn'
 import {
   StyleSheet,
   View,
@@ -309,6 +309,7 @@ const GameScreen = ({ navigation, route }) => {
   }
 
   const images = details ? details.images : {}
+  const [loggedIn] = useGlobal('loggedIn')
 
   return (
     <ScrollView>
@@ -322,10 +323,12 @@ const GameScreen = ({ navigation, route }) => {
           {_renderGameStats(details)}
           {_renderCredits(details)}
         </View>
-        <View style={styles.headerBottonRow}>
-          <AddToButton navigation={navigation} game={game} />
-          <LogPlayButton navigation={navigation} game={game} />
-        </View>
+        {loggedIn ?
+          <View style={styles.headerBottonRow}>
+            <AddToButton navigation={navigation} game={game} />
+            <LogPlayButton navigation={navigation} game={game} />
+          </View>
+          : null}
         <View style={{ padding: 10, backgroundColor: '#ffffff' }}>
           <ImageList objectId={game ? game.objectId : null} />
           {_renderDescription(details)}

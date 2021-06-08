@@ -1,6 +1,6 @@
 import React, { useState, useDispatch } from 'reactn'
 import Sentry from 'sentry-expo'
-import { View, Text, StyleSheet, Linking, Dimensions, ImageBackground, Image, AsyncStorage, Platform, KeyboardAvoidingView, UIManager, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Linking, Dimensions, ImageBackground, Image, AsyncStorage, Platform, KeyboardAvoidingView, UIManager, ScrollView, TouchableOpacity } from 'react-native'
 import { Input, Button } from 'react-native-elements'
 import { showMessage } from 'react-native-flash-message'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -201,7 +201,7 @@ const LoginScreen = props => {
               labelStyle={{ color: 'white' }}
             />
           </View>
-          <View style={[customStyles.buttonContainer, { width: '100%', }]}>
+          <View style={[customStyles.buttonContainer, { width: '100%', marginBottom: 5 }]}>
 
             <Button
               id="submitButton"
@@ -214,7 +214,22 @@ const LoginScreen = props => {
               title={'Sign In'}
               buttonStyle={{ backgroundColor: styleconstants.bggpurple }}
             />
+            <TouchableOpacity style={{ justifyContent: 'center', marginTop: 10, alignItems: 'center' }}
+              onPress={() => {
+                SecureStore.setItemAsync('skipLogin', 'true');
+
+                props.navigation.navigate("MainTabWrapper", {
+                  screen: "mainTab", params: {
+                    screen: 'Home',
+
+                  }
+                })
+              }}
+            >
+              <Text>{'I\'m just browsing, skip sign in >'}</Text>
+            </TouchableOpacity>
           </View>
+
         </View>
 
       </KeyboardAvoidingView>
