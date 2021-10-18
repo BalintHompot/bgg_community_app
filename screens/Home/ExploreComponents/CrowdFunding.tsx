@@ -1,24 +1,12 @@
-import React, { useGlobal, useEffect, useState, useDispatch } from 'reactn'
-import PropTypes, { func } from 'prop-types'
-import { View, Text, InteractionManager, Platform, FlatList, Image, TouchableOpacity, LayoutAnimation } from 'react-native'
-import { Button } from 'react-native-elements'
-import { createStackNavigator } from '@react-navigation/stack'
-import * as Sentry from 'sentry-expo'
-
-import { Icon } from 'react-native-elements'
-
-import GameScreen from '../../GameScreen'
-import LogPlay from '../../Plays/Log'
-import ListPlays from '../../Plays/List'
-import GameSearch from '../../GameSearch'
-import GameAddTo from '../../GameAddTo'
-
-import GameList from '../../../components/GameList'
-
-import globalStyles from '../../../shared/styles'
-import { logger } from '../../../shared/debug'
-import styleconstants, { layoutAnimation } from '../../../shared/styles/styleconstants'
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { showMessage } from 'react-native-flash-message'
+import React, { useEffect, useState } from 'reactn'
+import * as Sentry from 'sentry-expo'
+import styleconstants, { layoutAnimation } from '../../../shared/styles/styleconstants'
+
+
+
+
 
 const CrowdFunding = (props) => {
     const navigation = props.navigation
@@ -131,6 +119,7 @@ const CrowdFunding = (props) => {
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                 {cfList.length > 0 ?
                     <FlatList
+                        keyExtractor={(item: any) => item.item.id}
                         data={cfList}
                         renderItem={({ item, index }) => {
                             return <CrowdFundingItem item={item} index={index} navigation={navigation} />

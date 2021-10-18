@@ -13,6 +13,7 @@ declare module 'reactn/default' {
 
   export interface State {
     loggedIn: boolean
+    bggCredentials: BGGCredentials
     [key: string]: GameCache
   }
 }

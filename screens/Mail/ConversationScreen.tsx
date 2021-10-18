@@ -1,24 +1,15 @@
-import React, { useState, useEffect, useGlobal } from 'reactn'
-
-import SafeAreaView from 'react-native-safe-area-view'
-import { createStackNavigator } from '@react-navigation/stack'
 import { useFocusEffect } from '@react-navigation/native';
-import { getNumUnread } from '../../shared/FetchWithCookie'
-
-import { fetchRaw } from '../../shared/HTTP'
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Keyboard } from 'react-native';
-import styles from '../../shared/styles'
-import { func } from 'prop-types';
-import MessageThumbNail from '../MessageThumbNail'
-import { manipulateAsync } from 'expo-image-manipulator';
-import { Icon } from 'react-native-elements'
+import { Dimensions, FlatList, Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, View } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { showMessage } from 'react-native-flash-message';
 import { BarIndicator } from 'react-native-indicators';
-import { showMessage } from 'react-native-flash-message'
-import * as Sentry from 'sentry-expo'
-
-import HTML from "react-native-render-html";
+import SafeAreaView from 'react-native-safe-area-view';
+import React, { useGlobal, useState } from 'reactn';
+import * as Sentry from 'sentry-expo';
+import { getNumUnread } from '../../shared/FetchWithCookie';
+import { fetchRaw } from '../../shared/HTTP';
+import styles from '../../shared/styles';
 import styleconstants from '../../shared/styles/styleconstants';
-
 
 const showFlash = (message, type = 'danger') => {
   showMessage({ message, type, icon: 'auto' })
@@ -33,6 +24,8 @@ const ConversationScreen = props => {
   let [messageToSend, setMessageToSend] = useState('');
   let [subjectToSend, setSubjectToSend] = useState('');
 
+  const [{username}] = useGlobal('bggCredentials')
+
   const isNewMessage = props.route.params.subject === 'New message'
 
   const { height, width } = Dimensions.get("window")
@@ -40,7 +33,6 @@ const ConversationScreen = props => {
   const maxTextInputHeight = 22 * numLines
   const extraTextInputHeight = Platform.OS === 'ios' ? 10 : 2
   let [textInputHeight, setHeight] = useState(34 + extraTextInputHeight)
-
 
   function getPastMessagesString() {
     var s = ""
@@ -152,7 +144,7 @@ const ConversationScreen = props => {
       resp.text().then(rText => {
 
 
-        const firstSender = props.route.params.folder === 'inbox' ? props.route.params.user : global.username
+        const firstSender = props.route.params.folder === 'inbox' ? props.route.params.user : username
         //console.log("resp text", rText)
         let regexMsgs = rText.match(/>(.*?)</g)
         //console.log("enclosed", regexMsgs)
@@ -267,9 +259,10 @@ const ConversationScreen = props => {
           :
           <FlatList
             data={messages}
+            keyExtractor={({sender}, idx)=> `${sender}-${idx}`}
             renderItem={({ item }) => {
 
-              let isSelf = global.username.normalize() === item.sender.normalize()
+              let isSelf = username.normalize() === item.sender.normalize()
 
               return (
                 <View style={{ width: '100%', alignItems: isSelf ? 'flex-end' : 'flex-start' }}>

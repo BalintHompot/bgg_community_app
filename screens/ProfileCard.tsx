@@ -1,44 +1,38 @@
 import { Image, Text, View } from 'react-native'
 import { Icon } from 'react-native-elements'
-import React, { useDispatch, useEffect, useState } from 'reactn'
+import React, { useEffect, useState } from 'reactn'
 import { fetchXML } from '../shared/HTTP'
-import { logOutReducer } from '../shared/store/reducers/authorization'
 import styleconstants from '../shared/styles/styleconstants'
-
 
 var parseString = require('react-native-xml2js').parseString
 
-const ProfileCard = (props) => {
+type ProfileProps = {
+  username: string
+}
+
+const ProfileCard = (props: ProfileProps) => {
   let [profileDetails, setProfileDetails] = useState(null)
   let [userFetched, setUserFetched] = useState(false)
-  const logOut = useDispatch(logOutReducer)
 
-  let userName = props.userName
+  let username = props.username
+  console.log({username, userFetched})
 
   const fetchUserDetails = async () => {
     // getting user info
-    const url = 'https://boardgamegeek.com/xmlapi2/users?name=' + userName
+    const url = 'https://boardgamegeek.com/xmlapi2/users?name=' + username
 
     const userDetails = await fetchXML(url, { method: 'GET' })
     parseString(userDetails, function (err, result) {
-      //console.log("xml parsed", result)
-
       setProfileDetails(result)
       setUserFetched(true)
     })
   }
 
+
   useEffect(() => {
-    if (!userFetched) {
-      fetchUserDetails()
-    }
+    if (!userFetched) fetchUserDetails()
   }, [])
 
-  const handleLogOut = () => {
-    //tells global store we've logged in
-    props.navigation.navigate('Login')
-    logOut()
-  }
 
   return (
     <View>
@@ -138,7 +132,7 @@ const ProfileCard = (props) => {
                 marginRight: 30,
               }}
             >
-              {profileDetails.user.$.name != global.username ? (
+              {profileDetails.user.$.name != username ? (
                 <Icon
                   name="mail"
                   color={styleconstants.bggorange}
@@ -173,3 +167,4 @@ const ProfileCard = (props) => {
 }
 
 export default ProfileCard
+

@@ -3,13 +3,12 @@ import * as Sentry from 'sentry-expo'
 Sentry.init({
   dsn: SENTRY_CONFIG,
   enableInExpoDevelopment: false,
-  debug: true
-
+  debug: true,
 })
 
-import { getDispatch } from 'reactn'
+import { useDispath } from 'reactn'
 import { showMessage } from 'react-native-flash-message'
-
+import { logOutReducer } from '../shared/store/reducers/authorization'
 import { logger } from './debug'
 
 const baseURL = 'https://bgg.cc'
@@ -41,19 +40,13 @@ export const fetchJSON = async (path, args = {}, headers = {}) => {
     if (response.status == 200) {
       return response.json()
     } else if (response.status == 403) {
-      getDispatch().logOut()
-      showMessage({
-        message: 'Your session has expired, please log in again to continue.',
-        type: 'danger',
-        icon: 'auto',
-        duration: 3000
-      })
+      forceLogOut()
     } else {
       logger(
         `Got status code: ${response.status} instead when fetching: ${path}`
       )
       Sentry.captureMessage('Non 200 Response for HTTP request.', {
-        extra: { url: path, stauts: response.status }
+        extra: { url: path, stauts: response.status },
       })
     }
   } catch (error) {
@@ -73,22 +66,14 @@ export const fetchXML = async (path, args = {}, headers = {}) => {
     if (response.status == 200) {
       const respXML = await response.text()
       return respXML
-
-
     } else if (response.status == 403) {
-      getDispatch().logOut()
-      showMessage({
-        message: 'Your session has expired, please log in again to continue.',
-        type: 'danger',
-        icon: 'auto',
-        duration: 3000
-      })
+      forceLogOut()
     } else {
       logger(
         `Got status code: ${response.status} instead when fetching: ${path}`
       )
       Sentry.captureMessage('Non 200 Response for HTTP request.', {
-        extra: { url: path, stauts: response.status }
+        extra: { url: path, stauts: response.status },
       })
     }
   } catch (error) {
@@ -96,4 +81,16 @@ export const fetchXML = async (path, args = {}, headers = {}) => {
     console.error(error)
     Sentry.captureException(error)
   }
+}
+
+const forceLogOut = () => {
+  const logOut = useDispath(logOutReducer)
+  logOut()
+
+  showMessage({
+    message: 'Your session has expired, please log in again to continue.',
+    type: 'danger',
+    icon: 'auto',
+    duration: 3000,
+  })
 }

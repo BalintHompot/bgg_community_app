@@ -1,37 +1,15 @@
-import React, { useGlobal, useEffect, useState, useDispatch } from 'reactn'
-import PropTypes, { func } from 'prop-types'
 import {
-  View,
-  Text,
-  InteractionManager,
-  Platform,
   FlatList,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  LayoutAnimation,
+  Image, StyleSheet, Text, TouchableOpacity, View
 } from 'react-native'
-import { Button } from 'react-native-elements'
-import { createStackNavigator } from '@react-navigation/stack'
-import * as Sentry from 'sentry-expo'
-
-import { Icon } from 'react-native-elements'
-
-import GameScreen from '../../GameScreen'
-import LogPlay from '../../Plays/Log'
-import ListPlays from '../../Plays/List'
-import GameSearch from '../../GameSearch'
-import GameAddTo from '../../GameAddTo'
-
-import GameList from '../../../components/GameList'
-
-import globalStyles from '../../../shared/styles'
-import { logger } from '../../../shared/debug'
-import styleconstants, {
-  layoutAnimation,
-} from '../../../shared/styles/styleconstants'
 import { showMessage } from 'react-native-flash-message'
+import { Dropdown } from 'react-native-material-dropdown-v2'
+import React, { useEffect, useState } from 'reactn'
+import * as Sentry from 'sentry-expo'
 import { getRatingColor } from '../../../shared/bgg/collection'
+import styleconstants, {
+  layoutAnimation
+} from '../../../shared/styles/styleconstants'
 
 const Hexagon = (props) => {
   return (
@@ -96,39 +74,64 @@ const stylesHex = StyleSheet.create({
   },
 })
 
-const HomeList = (props) => {
+const AllTimeList = (props) => {
   const navigation = props.navigation
 
   const [refreshing, setRefreshing] = useState(false)
-  const [homeList, setHomeList] = useState([])
+  const [allTimeList, setallTimeList] = useState([])
   let [title, setTitle] = useState('Loading list')
   let [subTitle, setSubTitle] = useState('...')
+  let [subcats, setSubcats] = useState([])
+  let [selectedCat, setSelectedCat] = useState(null)
 
   const showFlash = (message, type = 'danger') => {
     showMessage({ message, type, icon: 'auto' })
   }
 
-  const fetchHomeList = () => {
-    let homeURL = 'https://api.geekdo.com/api/homegamelists/' + props.listId
-    fetch(homeURL)
-      .then((homeList) => {
-        //console.log("home list is", homeList.status)
-        if (homeList.status === 200) {
-          homeList.json().then((homeListJson) => {
-            // console.log("home list json", homeListJson)
-            setHomeList(homeListJson.games)
-            setTitle(homeListJson.title)
-            setSubTitle(homeListJson.description)
+  const fetchallTimeIDs = () => {
+    fetch('https://api.geekdo.com/api/subdomains?domain=boardgame')
+      .then((ids) => {
+        ids.json().then((idJson) => {
+          //console.log("all time id-s", idJson)
+          let cats = []
+          for (var i in idJson) {
+            cats.push(idJson[i])
+            cats[i].label = cats[i].name
+            cats[i].value = cats[i].id
+          }
+          setSubcats(cats)
+          var randInd = Math.floor(Math.random() * cats.length)
+
+          setSelectedCat(cats[randInd].name)
+          fetchallTimeList(cats[randInd].id)
+        })
+      })
+      .catch((error) => {
+        showFlash('There was a problem with loading the allTime list id-s.')
+        Sentry.captureException(error)
+      })
+  }
+  const fetchallTimeList = (listid) => {
+    let allTimeURL = 'https://api.geekdo.com/api/subdomaingamelists/' + listid
+    fetch(allTimeURL)
+      .then((allTimeList) => {
+        //console.log("all time list is", allTimeList.status)
+        if (allTimeList.status === 200) {
+          allTimeList.json().then((allTimeListJson) => {
+            //console.log("allTime list json", allTimeListJson)
+            setallTimeList(allTimeListJson.games)
+            setTitle(allTimeListJson.title)
+            setSubTitle(allTimeListJson.description)
           })
         } else {
-          showFlash('There was a problem with loading the home list.')
+          showFlash('There was a problem with loading the allTime list.')
           Sentry.captureMessage('Non 200 Response for HTTP request.', {
-            extra: { url: homeURL, stauts: homeList.status },
+            extra: { url: allTimeURL, stauts: allTimeList.status },
           })
         }
       })
       .catch((error) => {
-        showFlash('There was a problem with loading the home list.')
+        showFlash('There was a problem with loading the allTime list.')
         Sentry.captureException(error)
       })
   }
@@ -136,12 +139,12 @@ const HomeList = (props) => {
   useEffect(() => {
     layoutAnimation()
 
-    if (homeList.length === 0) {
-      fetchHomeList()
+    if (!selectedCat) {
+      fetchallTimeIDs()
     }
   })
 
-  const HomeItem = (props) => {
+  const AllTimeItem = (props) => {
     return (
       <TouchableOpacity
         style={{ margin: 3, width: 150, padding: 10 }}
@@ -214,11 +217,33 @@ const HomeList = (props) => {
 
   return (
     <View style={{ backgroundColor: 'white', marginVertical: 3, padding: 15 }}>
-      <Text
-        style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}
-      >
-        {title}
-      </Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text
+          style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}
+        >
+          {'Best games of all time in: '}
+        </Text>
+
+        <Dropdown
+          dropdownOffset={{
+            top: 0,
+            left: 0,
+          }}
+          itemCount={subcats.length}
+          containerStyle={{ width: 150, margin: 0, height: 30 }}
+          inputContainerStyle={{
+            borderBottomWidth: 2,
+            borderBottomColor: styleconstants.bggorange,
+          }}
+          style={{ margin: 0, height: 30 }}
+          data={subcats}
+          value={selectedCat} //use local state if set, otherwise global
+          onChangeText={(f, ind) => {
+            setSelectedCat(f)
+            fetchallTimeList(subcats[ind].id)
+          }}
+        />
+      </View>
       <Text style={{ fontFamily: styleconstants.primaryFont, fontSize: 16 }}>
         {subTitle}
       </Text>
@@ -230,22 +255,27 @@ const HomeList = (props) => {
           marginTop: 10,
         }}
       >
-        {homeList.length > 0 ? (
+        {allTimeList.length > 0 ? (
           <FlatList
-            data={homeList}
+            data={allTimeList}
+            keyExtractor={({item}) => item.id}
             renderItem={({ item, index }) => {
               return (
-                <HomeItem item={item} index={index} navigation={navigation} />
+                <AllTimeItem
+                  item={item}
+                  index={index}
+                  navigation={navigation}
+                />
               )
             }}
             horizontal
           />
         ) : (
-          <Text>Loading the home list...</Text>
+          <Text>Loading top games in categroy ...</Text>
         )}
       </View>
     </View>
   )
 }
 
-export default HomeList
+export default AllTimeList
