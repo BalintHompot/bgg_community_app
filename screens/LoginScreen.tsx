@@ -1,19 +1,16 @@
-import React, { useState, useDispatch } from 'reactn'
-import Sentry from 'sentry-expo'
-import { View, Text, StyleSheet, Linking, Dimensions, ImageBackground, Image, AsyncStorage, Platform, KeyboardAvoidingView, UIManager, ScrollView } from 'react-native'
-import { Input, Button } from 'react-native-elements'
-import { showMessage } from 'react-native-flash-message'
 import { createStackNavigator } from '@react-navigation/stack'
-import { logIn, getUserId } from '../shared/auth'
+import * as SecureStore from 'expo-secure-store'
+import { Dimensions, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, UIManager, View } from 'react-native'
+import { Button, Input } from 'react-native-elements'
+import { MessageType, showMessage } from 'react-native-flash-message'
+import React, { useDispatch, useState } from 'reactn'
+import Sentry from 'sentry-expo'
+import { getUserId, logIn } from '../shared/auth'
 import { getNumUnread } from '../shared/FetchWithCookie'
-import * as SecureStore from 'expo-secure-store';
-
-
-import styles from '../shared/styles'
+import { setCredentialsReducer } from '../shared/store/reducers/authorization'
 import styleconstants from '../shared/styles/styleconstants'
 
 const height = Dimensions.get('screen').height
-const width = Dimensions.get('screen').width
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -60,12 +57,10 @@ const LoginScreen = props => {
   let [passwordError, setPasswordError] = useState(null)
 
   let [loading, setLoading] = useState(false)
-  let [message, setMessage] = useState(null)
 
   ///android cant handle partial avoiding view
 
-  const dispatch = useDispatch()
-
+  const setCredentials = useDispatch(setCredentialsReducer);
 
   const usernameChange = username => {
     setUsername(username)
@@ -75,10 +70,9 @@ const LoginScreen = props => {
     setPassword(password)
   }
 
-  const showFlash = (message, type = 'danger') => {
+  const showFlash = (message, type: MessageType = 'danger') => {
     showMessage({ message, type, icon: 'auto' })
   }
-
 
   const handleLogIn = () => {
     let valid = true
@@ -101,8 +95,6 @@ const LoginScreen = props => {
 
   const attemptBGGLogin = async (username, password) => {
     try {
-
-
       SecureStore.setItemAsync('userName', username);
       SecureStore.setItemAsync('userPassword', password);
 
@@ -123,12 +115,10 @@ const LoginScreen = props => {
             lastname
           }
 
-
           await getNumUnread()
 
-          dispatch.setCredentials(bggCredentials)
-          global.username = username
-
+          setCredentials(bggCredentials)
+          // global.username = username
 
           props.navigation.navigate("MainTabWrapper", {
             screen: "mainTab", params: {
@@ -136,9 +126,6 @@ const LoginScreen = props => {
 
             }
           })
-
-
-
 
         } else {
           showFlash(
@@ -154,6 +141,7 @@ const LoginScreen = props => {
     } catch (error) {
       showFlash('Unexpected error logging in, please try again.')
       console.warn(error)
+      // @ts-ignore
       Sentry.captureException(error)
     }
   }
@@ -236,7 +224,6 @@ const LoginScreen = props => {
   </View>
 
   let InnerWrapped
-
 
   if (Platform.OS === 'ios') {
     InnerWrapped = <View>

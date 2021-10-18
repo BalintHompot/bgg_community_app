@@ -1,74 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  InteractionManager,
-  LayoutAnimation
-} from 'react-native'
-import { Icon, Button } from 'react-native-elements'
+import PropTypes from 'prop-types'
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Icon } from 'react-native-elements'
 import HTMLView from 'react-native-htmlview'
-import ImageProgress from 'react-native-image-progress'
-//import ProgressBar from 'react-native-progress/Circle'
-
-import ImageList from './ImageList'
+import React, { useDispatch, useEffect, useGlobal } from 'reactn'
+import Spinner from '../../components/Spinner'
+import { getRatingColor } from '../../shared/bgg/collection'
+import { navigationType, routeType } from '../../shared/propTypes'
+import styleconstants, {
+  layoutAnimation
+} from '../../shared/styles/styleconstants'
 import AddToButton from './AddToButton'
+import ImageList from './ImageList'
 import LogPlayButton from './LogPlayButton'
-import { fetchJSON } from '../../shared/HTTP'
-import { getRatingColor } from '../../shared/collection'
-
 import styles from './styles'
-import styleconstants, { layoutAnimation } from '../../shared/styles/styleconstants'
+
+
+
 
 const GameScreen = ({ navigation, route }) => {
   const { game } = route.params
+  const { objectId } = game
+  const [
+    { details, itemStats, images, playCount, collectionDetails } = {
+      details: null,
+      images: null,
+      itemStats: { item: { rankinfo: [] } },
+      playCount: 0,
+      collectionDetails: { collectionStatus: {} },
+    },
+  ] = useGlobal(`game/${objectId}`)
+  console.log('details', details)
 
-  //console.log("gamescreen params", route.params)
+  console.log('GameScreen/index.js', collectionDetails)
 
-  const [details, setDetails] = useState(null)
-  const [itemStats, setItemStates] = useState({ item: { rankinfo: [] } })
-
-  // export default class GameScreen extends React.Component {
-  // state = {
-  //   game: {},
-  //   details: null,
-  //   stats: { item: { rankinfo: [] } },
-  //   imageModalIndex: null
-  // }
-
-  // static navigationOptions = ({ route }) => ({
-  //   title: route.params.game.name
-  // })
+  const getGameDetails = useDispatch('getGameDetails')
 
   useEffect(() => {
     layoutAnimation()
-
-    const objectId = game.objectId
-    if (details === null) {
-      getGameStats(objectId)
-      getGameDetails(objectId)
-
-    }
+    if (details === null) getGameDetails(objectId)
   }, [game])
 
-  getGameDetails = async (objectId) => {
-    //console.log("fetching game", objectId)
-    const url = `https://api.geekdo.com/api/geekitems?objectid=${objectId}&showcount=10&nosession=1&ajax=1&objecttype=thing`
-    const { item } = await fetchJSON(url)
-    //console.log("fetched game")
-
-    setDetails(item)
-  }
-
-  getGameStats = async (objectId) => {
-    const url = `https://api.geekdo.com/api/dynamicinfo?objectid=${objectId}&showcount=10&nosession=1&ajax=1&objecttype=thing`
-    const newItemStats = await fetchJSON(url)
-
-    setItemStates(newItemStats)
-  }
-
-  _renderHeaderRank = () => {
+  const _renderHeaderRank = () => {
     let {
       item: { rankinfo: rankInfo },
     } = itemStats
@@ -122,7 +94,7 @@ const GameScreen = ({ navigation, route }) => {
     }
   }
 
-  _renderHeaderName = () => {
+  const _renderHeaderName = () => {
     const {
       item: { stats: stats = { average: '0' } },
     } = itemStats
@@ -141,7 +113,11 @@ const GameScreen = ({ navigation, route }) => {
       <View style={{ flexDirection: 'row' }}>
         <View style={[styles.headerIcon, { backgroundColor: ratingBGColor }]}>
           <Text
-            style={{ color: '#ffffff', fontSize: 24, fontFamily: styleconstants.primaryFontBold }}
+            style={{
+              color: '#ffffff',
+              fontSize: 24,
+              fontFamily: styleconstants.primaryFontBold,
+            }}
           >
             {ratingText}
           </Text>
@@ -181,9 +157,10 @@ const GameScreen = ({ navigation, route }) => {
     )
   }
 
-  _trimTo = (decimal, places) => (Math.round(decimal * 10) / 10).toFixed(places)
+  const _trimTo = (decimal, places) =>
+    (Math.round(decimal * 10) / 10).toFixed(places)
 
-  _playerCounts = (cnts = {}) => {
+  const _playerCounts = (cnts = {}) => {
     if (cnts.min !== undefined) {
       cnts = [cnts.min, cnts.max]
     }
@@ -195,7 +172,7 @@ const GameScreen = ({ navigation, route }) => {
     }
   }
 
-  _renderGameStats = (details) => {
+  const _renderGameStats = (details) => {
     const {
       item: { polls: polls },
     } = itemStats
@@ -235,7 +212,7 @@ const GameScreen = ({ navigation, route }) => {
     }
   }
 
-  _renderCreditLine = (name, list, show) => {
+  const _renderCreditLine = (name, list, show) => {
     if (list.length > 0) {
       let to_show = list.slice(0, show)
       return (
@@ -252,7 +229,7 @@ const GameScreen = ({ navigation, route }) => {
     }
   }
 
-  _renderCredits = (details) => {
+  const _renderCredits = (details) => {
     if (details !== null) {
       return (
         <View>
@@ -265,7 +242,7 @@ const GameScreen = ({ navigation, route }) => {
     }
   }
 
-  _renderDescription = (details) => {
+  const _renderDescription = (details) => {
     if (details !== null) {
       const description = details.description.replace(/\n/g, '')
       return (
@@ -285,35 +262,26 @@ const GameScreen = ({ navigation, route }) => {
     }
   }
 
-  _renderMainImage = (images) => {
+  const _renderMainImage = (images) => {
     if (images.previewthumb) {
       return (
-        <ImageProgress
+        <Image
           source={{ uri: images.previewthumb }}
-          indicatorProps={{
-            color: '#ffffff',
-          }}
           resizeMode="contain"
           style={styles.headerImage}
         />
       )
     } else {
-      return (
-        <View style={styles.emptyView}>
-
-
-          <Text style={{ marginTop: 10, color: 'white' }}>Loading...</Text>
-        </View>
-      )
+      return <Spinner />
     }
   }
 
-  const images = details ? details.images : {}
+  const coverImages = details ? details.images : {}
 
   return (
     <ScrollView>
       <View style={styles.itemContainer}>
-        <View style={styles.gameHeader}>{_renderMainImage(images)}</View>
+        <View style={styles.gameHeader}>{_renderMainImage(coverImages)}</View>
         {_renderHeaderRank()}
         <View style={{ padding: 10, backgroundColor: '#000000' }}>
           {_renderHeaderName(route.params)}
@@ -323,11 +291,19 @@ const GameScreen = ({ navigation, route }) => {
           {_renderCredits(details)}
         </View>
         <View style={styles.headerBottonRow}>
-          <AddToButton navigation={navigation} game={game} />
-          <LogPlayButton navigation={navigation} game={game} />
+          <AddToButton
+            navigation={navigation}
+            game={game}
+            collectionDetails={collectionDetails}
+          />
+          <LogPlayButton
+            navigation={navigation}
+            game={game}
+            playCount={playCount}
+          />
         </View>
         <View style={{ padding: 10, backgroundColor: '#ffffff' }}>
-          <ImageList objectId={game ? game.objectId : null} />
+          <ImageList images={images} />
           {_renderDescription(details)}
         </View>
       </View>
@@ -336,6 +312,16 @@ const GameScreen = ({ navigation, route }) => {
 }
 
 export default GameScreen
+
+GameScreen.propTypes = {
+  ...navigationType,
+  ...routeType({
+    game: PropTypes.object,
+    collectionId: PropTypes.string,
+    collectionStatus: PropTypes.any,
+    wishlistPriority: PropTypes.number,
+  }),
+}
 
 const htmlStyles = StyleSheet.create({
   p: {

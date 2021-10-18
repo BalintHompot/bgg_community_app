@@ -1,9 +1,9 @@
 import { persistGlobal } from '../helpers/persistence'
-import { fetchCollectionFromBGG } from '../../../shared/collection'
+import { fetchCollectionFromBGG } from '../../bgg/collection'
 
 const collectionKey = 'collection'
 
-export const fetchCollection = async state => {
+export const fetchCollection = async (state) => {
   const { username } = state.bggCredentials
   const collection = await fetchCollectionFromBGG(username)
 
@@ -18,7 +18,7 @@ export const addOrUpdateGameInCollection = async (state, _, game) => {
   const { collection } = state
 
   let idx = collection.findIndex(
-    collectionGame =>
+    (collectionGame) =>
       collectionGame.objectId.toString() === game.objectId.toString()
   )
 
@@ -37,10 +37,9 @@ export const addOrUpdateGameInCollection = async (state, _, game) => {
 
 export const removeGameFromCollection = async (state, _, game) => {
   const { collection } = state
-  let idx = collection.findIndex(
-    collectionGame =>
-      collectionGame.objectId.toString() === game.objectId.toString()
-  )
+  let idx = collection.findIndex((collectionGame) => {
+    return collectionGame.objectId.toString() === game.objectId.toString()
+  })
 
   if (idx > -1) {
     // exists

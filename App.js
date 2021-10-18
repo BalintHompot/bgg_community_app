@@ -9,7 +9,7 @@ Sentry.init({
 
 import React, { useDispatch } from 'reactn'
 import { View, AsyncStorage } from 'react-native'
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -36,8 +36,7 @@ import { Badge } from 'react-native-elements'
 import { findCoordinates } from './shared/location'
 
 var parseString = require('react-native-xml2js').parseString
-import * as SecureStore from 'expo-secure-store';
-
+import * as SecureStore from 'expo-secure-store'
 
 //bootstraps ReactN global store
 setupStore()
@@ -111,21 +110,17 @@ export default class App extends React.PureComponent {
 
     //// we need to migrate in the background from async storage to kaychain
     if (valueName && valuePassword) {
-      console.log("clearing async storage, placing it in securestore")
-      AsyncStorage.removeItem('userName');
-      AsyncStorage.removeItem('userPassword');
+      console.log('clearing async storage, placing it in securestore')
+      AsyncStorage.removeItem('userName')
+      AsyncStorage.removeItem('userPassword')
 
-
-      SecureStore.setItemAsync('userName', valueName);
-      SecureStore.setItemAsync('userPassword', valuePassword);
-
-
+      SecureStore.setItemAsync('userName', valueName)
+      SecureStore.setItemAsync('userPassword', valuePassword)
     } else {
-      console.log("getting from secure store")
+      console.log('getting from secure store')
 
-      valueName = await SecureStore.getItemAsync('userName');
-      valuePassword = await SecureStore.getItemAsync('userPassword');
-
+      valueName = await SecureStore.getItemAsync('userName')
+      valuePassword = await SecureStore.getItemAsync('userPassword')
     }
 
     await this.attemptBGGLoginInBackground(valueName, valuePassword)

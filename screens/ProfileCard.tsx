@@ -1,59 +1,23 @@
-import React, { useState, useEffect, useGlobal } from 'reactn'
-import Sentry from 'sentry-expo'
-import { View, Text, StyleSheet, Linking, ScrollView, Image } from 'react-native'
-
-import { SearchBar, Icon } from 'react-native-elements'
-import styleconstants from '../shared/styles/styleconstants'
-import styles from '../shared/styles'
-import { getDispatch } from 'reactn'
-
+import { Image, Text, View } from 'react-native'
+import { Icon } from 'react-native-elements'
+import React, { useDispatch, useEffect, useState } from 'reactn'
 import { fetchXML } from '../shared/HTTP'
-var parseString = require('react-native-xml2js').parseString;
+import { logOutReducer } from '../shared/store/reducers/authorization'
+import styleconstants from '../shared/styles/styleconstants'
 
 
-const customStyles = StyleSheet.create({
-  text: {
-    paddingHorizontal: 20,
-    paddingVertical: 10
-  },
+var parseString = require('react-native-xml2js').parseString
 
-  stateText: {
-    paddingVertical: 20
-  },
-
-  bottomText: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    marginBottom: 20
-  },
-
-  buttonContainer: {
-    paddingVertical: 30
-  },
-
-  button: {
-    alignSelf: 'center',
-    width: '100%'
-  },
-
-  strong: {
-    fontWeight: 'bold'
-  }
-})
-
-const ProfileCard = props => {
-
-  let [loading, setLoading] = useState(false)
+const ProfileCard = (props) => {
   let [profileDetails, setProfileDetails] = useState(null)
   let [userFetched, setUserFetched] = useState(false)
+  const logOut = useDispatch(logOutReducer)
 
   let userName = props.userName
 
-
   const fetchUserDetails = async () => {
     // getting user info
-    const url = "https://boardgamegeek.com/xmlapi2/users?name=" + userName
-
+    const url = 'https://boardgamegeek.com/xmlapi2/users?name=' + userName
 
     const userDetails = await fetchXML(url, { method: 'GET' })
     parseString(userDetails, function (err, result) {
@@ -61,7 +25,7 @@ const ProfileCard = props => {
 
       setProfileDetails(result)
       setUserFetched(true)
-    });
+    })
   }
 
   useEffect(() => {
@@ -70,51 +34,49 @@ const ProfileCard = props => {
     }
   }, [])
 
-
-
   const handleLogOut = () => {
-
-
     //tells global store we've logged in
-    props.navigation.navigate("Login")
-    getDispatch().logOut()
+    props.navigation.navigate('Login')
+    logOut()
   }
 
-
-
   return (
-
-    <View >
-      {userFetched ?
+    <View>
+      {userFetched ? (
         <View style={{ flexDirection: 'column' }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
             <View style={{ flexDirection: 'row' }}>
-              <View style={{ flexDirection: 'column', justifyContent: 'center', marginRight: 20 }}>
-                {profileDetails.user.avatarlink[0].$.value == "N/A" ?
+              <View
+                style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  marginRight: 20,
+                }}
+              >
+                {profileDetails.user.avatarlink[0].$.value == 'N/A' ? (
                   <Image
                     resizeMode={'contain'}
-
                     style={{ width: 64, height: 64 }}
                     source={{
-                      uri:
-                        "https://ynnovate.it/wp-content/uploads/2015/07/default-avatar1.png"
-                    }} />
-                  :
+                      uri: 'https://ynnovate.it/wp-content/uploads/2015/07/default-avatar1.png',
+                    }}
+                  />
+                ) : (
                   <Image
                     resizeMode={'contain'}
-
                     style={{ width: 64, height: 64 }}
                     source={{
-                      uri:
-                        profileDetails.user.avatarlink[0].$.value
-                    }} />
-                }
-
+                      uri: profileDetails.user.avatarlink[0].$.value,
+                    }}
+                  />
+                )}
               </View>
 
-              <View style={{ flexDirection: 'column', justifyContent: "center" }}>
-
+              <View
+                style={{ flexDirection: 'column', justifyContent: 'center' }}
+              >
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon
                     name="id-card-o"
@@ -123,13 +85,9 @@ const ProfileCard = props => {
                     containerStyle={{ margin: 4 }}
                     size={16}
                   />
-                  <Text>
-                    {profileDetails.user.firstname[0].$.value}
-                  </Text>
+                  <Text>{profileDetails.user.firstname[0].$.value}</Text>
                   <Text> </Text>
-                  <Text>
-                    {profileDetails.user.lastname[0].$.value}
-                  </Text>
+                  <Text>{profileDetails.user.lastname[0].$.value}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon
@@ -139,9 +97,7 @@ const ProfileCard = props => {
                     containerStyle={{ margin: 4 }}
                     size={16}
                   />
-                  <Text >
-                    {profileDetails.user.$.name}
-                  </Text>
+                  <Text>{profileDetails.user.$.name}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon
@@ -151,13 +107,9 @@ const ProfileCard = props => {
                     containerStyle={{ margin: 4 }}
                     size={16}
                   />
-                  <Text>
-                    {profileDetails.user.country[0].$.value}
-                  </Text>
+                  <Text>{profileDetails.user.country[0].$.value}</Text>
                   <Text> / </Text>
-                  <Text>
-                    {profileDetails.user.stateorprovince[0].$.value}
-                  </Text>
+                  <Text>{profileDetails.user.stateorprovince[0].$.value}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon
@@ -167,9 +119,7 @@ const ProfileCard = props => {
                     containerStyle={{ margin: 4 }}
                     size={16}
                   />
-                  <Text>
-                    {profileDetails.user.traderating[0].$.value}
-                  </Text>
+                  <Text>{profileDetails.user.traderating[0].$.value}</Text>
                   <Icon
                     name="cube"
                     color="dodgerblue"
@@ -177,14 +127,18 @@ const ProfileCard = props => {
                     containerStyle={{ margin: 4 }}
                     size={16}
                   />
-                  <Text>
-                    {profileDetails.user.marketrating[0].$.value}
-                  </Text>
+                  <Text>{profileDetails.user.marketrating[0].$.value}</Text>
                 </View>
               </View>
             </View>
-            <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 30 }}>
-              {profileDetails.user.$.name != global.username ?
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 30,
+              }}
+            >
+              {profileDetails.user.$.name != global.username ? (
                 <Icon
                   name="mail"
                   color={styleconstants.bggorange}
@@ -192,29 +146,30 @@ const ProfileCard = props => {
                   containerStyle={{ margin: 4 }}
                   size={30}
                   onPress={() => {
-                    props.navigation.navigate("Compose", { messageid: null, subject: "New message", user: profileDetails.user.$.name })
+                    props.navigation.navigate('Compose', {
+                      messageid: null,
+                      subject: 'New message',
+                      user: profileDetails.user.$.name,
+                    })
                   }}
                 />
-                : null}
+              ) : null}
             </View>
-
-
           </View>
-
         </View>
-        : <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-
+      ) : (
+        <View
+          style={{
+            height: 100,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <Text>Loading profile...</Text>
         </View>
-
-      }
-
-
+      )}
     </View>
-
   )
-
 }
-
 
 export default ProfileCard

@@ -4,7 +4,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  InteractionManager
+  InteractionManager,
 } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import PropTypes from 'prop-types'
@@ -12,14 +12,14 @@ import { debounce } from 'throttle-debounce'
 const XMLParser = require('react-xml-parser')
 
 import { fetchJSON } from '../shared/HTTP'
-import { getElementValue } from '../shared/xml.js'
+import { getElementValue } from '../shared/xml'
 import GameListItem from './../components/GameListItem'
 
 export default class GameSearch extends React.PureComponent {
   state = { games: [], searchFor: '' }
   static navigationOptions = () => {
     return {
-      title: 'Add to collection'
+      title: 'Add to collection',
     }
   }
 
@@ -74,7 +74,7 @@ export default class GameSearch extends React.PureComponent {
           paddingVertical: 20,
           borderTopWidth: 1,
           alignItems: 'center',
-          borderColor: '#CED0CE'
+          borderColor: '#CED0CE',
         }}
       >
         <Text>{message}</Text>
@@ -88,13 +88,13 @@ export default class GameSearch extends React.PureComponent {
       ListFooterComponent={this._renderFooter}
       extraData={this.state}
       data={this.state.games}
-      keyExtractor={item => item.objectId}
+      keyExtractor={(item) => item.objectId}
       renderItem={this._renderItem}
     />
   )
 
-  enrich = async games => {
-    let ids = games.map(g => g.objectId)
+  enrich = async (games) => {
+    let ids = games.map((g) => g.objectId)
     const url = `https://www.boardgamegeek.com/xmlapi2/thing?id=${ids.join(
       ','
     )}&type=boardgame,boardgameexpansion`
@@ -106,7 +106,7 @@ export default class GameSearch extends React.PureComponent {
         const xml = await response.text()
         const doc = new XMLParser().parseFromString(xml)
 
-        let moreDataOnGames = doc.children.map(item => {
+        let moreDataOnGames = doc.children.map((item) => {
           let objectId = item.attributes.id
           let image = getElementValue(item, 'image')
 
@@ -116,10 +116,10 @@ export default class GameSearch extends React.PureComponent {
           return { objectId, image, thumbnail, description }
         })
 
-        games = games.map(game => {
+        games = games.map((game) => {
           return Object.assign(
             game,
-            moreDataOnGames.find(g => g.objectId == game.objectId)
+            moreDataOnGames.find((g) => g.objectId == game.objectId)
           )
         })
 
@@ -130,12 +130,12 @@ export default class GameSearch extends React.PureComponent {
     }
   }
 
-  handlerSearch = str => {
+  handlerSearch = (str) => {
     this.setState({ searchFor: str })
     debounce(500, this.searchBGG(str))
   }
 
-  searchBGG = async searchFor => {
+  searchBGG = async (searchFor) => {
     if (searchFor.length > 2) {
       this.setState({ loading: true, games: [] })
 
@@ -144,10 +144,10 @@ export default class GameSearch extends React.PureComponent {
 
         const response = await fetchJSON(url)
 
-        const games = response.items.map(game => ({
+        const games = response.items.map((game) => ({
           objectId: game.objectid,
           name: game.name,
-          yearpublished: game.yearpublished
+          yearpublished: game.yearpublished,
         }))
 
         this.setState({ games, loading: false })
@@ -159,6 +159,6 @@ export default class GameSearch extends React.PureComponent {
 
 GameSearch.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
 }

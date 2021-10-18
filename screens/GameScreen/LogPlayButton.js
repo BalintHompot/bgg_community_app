@@ -1,22 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text } from 'react-native'
-import { Button, ButtonGroup } from 'react-native-elements'
+import React from 'react'
+import { View } from 'react-native'
+import { Button } from 'react-native-elements'
 import styles from './styles'
-import { fetchJSON } from '../../shared/HTTP'
+import { navigationType } from '../../shared/propTypes'
 
-const LogPlayButton = ({ navigation: { navigate }, game }) => {
-  const [playCount, setPlayCount] = useState(0)
-  fetchPlayCount = async () => {
-    const path = `/geekplay.php?action=getuserplaycount&ajax=1&objectid=${game.objectId}&objecttype=thing`
-
-    const { count } = await fetchJSON(path)
-    setPlayCount(count)
-  }
-
-  useEffect(() => {
-    fetchPlayCount()
-  }, [game.objectId])
-
+const LogPlayButton = ({ navigation: { navigate }, game, playCount }) => {
   const buttons = []
 
   const logPlayButtonStyle =
@@ -72,6 +60,10 @@ const LogPlayButton = ({ navigation: { navigate }, game }) => {
   }
 
   return <View style={styles.headerButtonGroup}>{buttons}</View>
+}
+
+LogPlayButton.propTypes = {
+  ...navigationType,
 }
 
 export default LogPlayButton

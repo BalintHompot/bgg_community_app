@@ -1,136 +1,77 @@
 import React, { useDispatch } from 'reactn'
 import { View, Text } from 'react-native'
 import { CheckBox, Button } from 'react-native-elements'
-import { showMessage } from 'react-native-flash-message'
-import { Dropdown } from 'react-native-material-dropdown-v2'
+
+import { Picker } from '@react-native-picker/picker'
 import PropTypes from 'prop-types'
 
-import { fetchJSON } from '../../shared/HTTP'
+import { navigationType, routeType } from '../../shared/propTypes.js'
 import globalStyles from '../../shared/styles'
 import styles from './styles'
 
 const GameAddTo = ({ navigation, route }) => {
-  const [collectionStatus, setCollectionStatus] = React.useState(
+  const [collectionStatus, setCollectionStatusState] = React.useState(
     route.params.collectionStatus
   )
   const [wishlistPriority, setWishlistPriority] = React.useState(
     route.params.wishlistPriority
   )
 
-  const addOrUpdateGameInCollection = useDispatch('addOrUpdateGameInCollection')
-  const removeGameFromCollection = useDispatch('removeGameFromCollection')
+  const setCollectionStatus = useDispatch('setCollectionStatus')
 
-  save = async () => {
+  const save = async () => {
     const { game, collectionId } = route.params
+    setCollectionStatus(game, collectionId, collectionStatus, wishlistPriority)
 
-    const body = {
-      item: {
-        collid: collectionId || 0,
-        status: collectionStatus,
-        objectid: game.objectId.toString(),
-        objectname: game.name,
-        objecttype: 'thing',
-        acquisitiondate: null,
-        invdate: null,
-        wishlistpriority: wishlistPriority
-      }
-    }
-
-    let response, success
-    if (collectionId) {
-      const url = `/api/collectionitems/${collectionId}`
-      response = await fetchJSON(url, { method: 'PUT', body })
-
-      success = response.message === 'Item updated'
-    } else {
-      const url = '/api/collectionitems'
-      response = await fetchJSON(url, { method: 'POST', body })
-      success = response.message === 'Item saved'
-    }
-
-    if (success) {
-      //update global / store
-      if (Object.values(collectionStatus).some(state => state)) {
-        game.status = {}
-
-        Object.keys(collectionStatus).map(key => {
-          game.status[key] = collectionStatus[key] ? '1' : '0'
-        })
-
-        addOrUpdateGameInCollection(game)
-      } else {
-        removeGameFromCollection(game)
-      }
-
-      navigation.goBack(null)
-    } else {
-      showMessage({
-        message: "Failed to save item's collection status, please try again.",
-        icon: 'auto',
-        type: 'danger'
-      })
-    }
+    navigation.goBack(null)
   }
 
+  const headerRight = () => (
+    <Button
+      small
+      onPress={save}
+      title="Save"
+      buttonStyle={globalStyles.headerButton}
+    />
+  )
   React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Button
-          small
-          onPress={save}
-          title="Save"
-          buttonStyle={globalStyles.headerButton}
-        />
-      )
-    })
+    navigation.setOptions({ headerRight })
   }, [navigation, save])
 
-  collectionStates = [
+  const collectionStates = [
     ['Owned', 'own'],
     ['Prevously Owned', 'prevowned'],
     ['For Trade', 'fortrade'],
     ['Want to Play', 'wanttoplay'],
     ['Want to Buy', 'wanttobuy'],
     ['Pre-ordered', 'preordered'],
-    ['Wishlist', 'wishlist']
+    ['Wishlist', 'wishlist'],
   ]
 
-  wishlistValues = [
+  const wishlistValues = [
     { label: 'Must have', value: 1 },
     { label: 'Love to have', value: 2 },
     { label: 'Like to have', value: 3 },
     { label: 'Thinking about it', value: 4 },
-    { label: "Don't buy this", value: 5 }
+    { label: "Don't buy this", value: 5 },
   ]
 
-  // static getDerivedStateFromProps(props, state) {
-  //   const { collectionStatus, wishlistPriority } = props.route.params
-
-  //   // logger(collectionStatus)
-
-  //   if (collectionStatus !== state.collectionStatus) {
-  //     return { collectionStatus, wishlistPriority }
-  //   }
-
-  //   // Return null to indicate no change to state.
-  //   return null
-  // }
-
-  toggle = attr => {
+  const toggle = (attr) => {
     let currentState = collectionStatus[attr]
-    setCollectionStatus({ ...collectionStatus, [attr]: !currentState })
+    setCollectionStatusState({ ...collectionStatus, [attr]: !currentState })
   }
 
-  _renderWishlistDropdown = wishedFor => {
+  const _renderWishlistDropdown = (wishedFor) => {
     return wishedFor ? (
       <View style={styles.wishlistDropDownWrapper}>
-        <Dropdown
-          dropdownOffset={{ top: 8, left: 0 }}
-          itemCount={6}
-          data={wishlistValues}
-          value={wishlistPriority}
-          onChangeText={value => setWishlistPriority(value)}
-        />
+        <Picker
+          selectedValue={wishlistPriority}
+          onValueChange={setWishlistPriority}
+        >
+          {wishlistValues.map(({ label, value }) => {
+            return <Picker.Item key={value} label={label} value={value} />
+          })}
+        </Picker>
       </View>
     ) : null
   }
@@ -161,18 +102,13 @@ const GameAddTo = ({ navigation, route }) => {
 }
 
 GameAddTo.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    setParams: PropTypes.func.isRequired
-  }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      game: PropTypes.object.isRequired,
-      collectionId: PropTypes.string,
-      collectionStatus: PropTypes.any,
-      wishlistPriority: PropTypes.number
-    })
-  })
+  ...navigationType,
+  ...routeType({
+    game: PropTypes.object.isRequired,
+    collectionId: PropTypes.string,
+    collectionStatus: PropTypes.any,
+    wishlistPriority: PropTypes.number,
+  }),
 }
 
 export default GameAddTo

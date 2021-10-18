@@ -4,13 +4,16 @@ import initialState from './helpers/initialState'
 import { getPersisted } from './helpers/persistence'
 
 import * as collectionReducers from './reducers/collection'
-import * as authReducers from './reducers/authorization'
+// import * as authReducers from './reducers/authorization'
+import * as gameReducers from './reducers/game'
 import * as previewReducers from './reducers/preview'
 
 // collection
 addReducers(collectionReducers)
 // auth
-addReducers(authReducers)
+// addReducers(authReducers)
+// game
+addReducers(gameReducers)
 // preview
 addReducers(previewReducers)
 
@@ -23,6 +26,6 @@ export const setupStore = async () => {
   await setGlobal({
     ...initialState,
     ...persistedAccount,
-    ...persistedCollection
+    ...persistedCollection,
   })
 }
