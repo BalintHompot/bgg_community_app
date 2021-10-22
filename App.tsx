@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { getFocusedRouteNameFromRoute, NavigationContainer } from '@react-navigation/native'
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer
+} from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import AppLoading from 'expo-app-loading'
 import * as Font from 'expo-font'
@@ -11,14 +14,14 @@ import { Badge } from 'react-native-elements'
 import FlashMessage from 'react-native-flash-message'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import React, { useDispatch, useState } from 'reactn'
+import React, { useGlobal, useState } from 'reactn'
 import * as Sentry from 'sentry-expo'
 import CollectionScreen from './screens/Collection/CollectionScreen'
 import HomeScreen from './screens/Home/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import MessagesScreen from './screens/Mail/MessagesScreen'
 import ProfileScreen from './screens/OwnProfileScreen'
-import { logIn } from './shared/auth'
+import { getUserId, logIn } from './shared/auth'
 import { getNumUnread } from './shared/FetchWithCookie'
 import { findCoordinates } from './shared/location'
 import { setupStore } from './shared/store'
@@ -37,10 +40,17 @@ const App = () => {
   const [isReady, setIsReady] = useState(false)
   const [userDetails, setUserDetails] = useState(false)
 
+  const [numUnread] = useGlobal('numUnread')
+
   const attemptBGGLoginInBackground = async (username, password) => {
     if (username && password) {
       try {
-        const { success } = await logIn(username, password)
+        const { userid } = await getUserId()
+        let success = false
+
+        if (userid) success = true
+
+        if (!success) success = await (await logIn(username, password)).success
 
         if (success) {
           setUserDetails(true)
@@ -48,7 +58,7 @@ const App = () => {
         }
       } catch (error) {
         console.warn(error)
-        Sentry.captureException(error)
+        Sentry.Native.captureException(error)
       }
     }
   }
@@ -59,6 +69,7 @@ const App = () => {
       lato: require('./assets/Lato-Regular.ttf'),
       'lato-bold': require('./assets/Lato-Bold.ttf'),
     })
+
     let valueName = await AsyncStorage.getItem('userName')
     let valuePassword = await AsyncStorage.getItem('userPassword')
     //// we need to migrate in the background from async storage to kaychain
@@ -75,13 +86,9 @@ const App = () => {
 
     await attemptBGGLoginInBackground(valueName, valuePassword)
 
-    //global.location = { "city": "Utrecht", "country": "Netherlands" }
+    // //global.location = { "city": "Utrecht", "country": "Netherlands" }
 
     findCoordinates()
-
-    /// async fetch collection
-    const fetchCollection = useDispatch('fetchCollection')
-    fetchCollection()
   }
 
   const renderTabs = () => {
@@ -89,7 +96,7 @@ const App = () => {
       const routeName = getFocusedRouteNameFromRoute(route)
       return !['Conversation', 'Compose'].includes(routeName)
     }
-    
+
     const Tab = createBottomTabNavigator()
     const Drawer = createStackNavigator()
 
@@ -117,7 +124,7 @@ const App = () => {
               tabBarIcon: ({ color, size }) => (
                 <View>
                   <Ionicons name="ios-mail-outline" size={size} color={color} />
-                  {global.numUnread > 0 ? (
+                  {numUnread > 0 ? (
                     <Badge
                       status="error"
                       containerStyle={{
@@ -125,7 +132,7 @@ const App = () => {
                         top: -4,
                         right: -4,
                       }}
-                      value={global.numUnread}
+                      value={numUnread}
                     />
                   ) : null}
                 </View>

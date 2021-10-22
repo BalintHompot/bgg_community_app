@@ -1,11 +1,11 @@
 import * as Sentry from 'sentry-expo'
-const XMLParser = require('react-xml-parser')
-
-import styleconstants from '../styles/styleconstants'
-
+import { COLLECTION_STATES } from '../constants'
 import { logger } from '../debug'
+import { GameCollectionStatus } from '../store/types'
+import styleconstants from '../styles/styleconstants'
 import { getElementValue } from '../xml'
 import { CollectionItem } from './types'
+const XMLParser = require('react-xml-parser')
 
 const timeout = (ms) => new Promise((res) => setTimeout(res, ms))
 
@@ -15,17 +15,18 @@ export const removeDuplicates = (myArr, prop) => {
   })
 }
 
-export const fetchCollectionFromBGG = async (username: string) => {
+export const fetchCollectionFromBGG = async (
+  username: string
+): Promise<CollectionItem[]> => {
   if (!username) {
     return []
   }
 
+  let collection: CollectionItem[] = []
   const url = `https://www.boardgamegeek.com/xmlapi2/collection?username=${username}`
 
   try {
-    let response
-
-    response = await fetch(url)
+    const response = await fetch(url)
 
     if (response.status == 202) {
       // collection is being prepared, come back late to try again
@@ -40,12 +41,11 @@ export const fetchCollectionFromBGG = async (username: string) => {
       //await nextFrame()
       var doc = new XMLParser().parseFromString(xml)
 
-      let collection: CollectionItem[] = []
       for (const item of doc.getElementsByTagName('item')) {
         //await nextFrame()
 
         const objectId = item.attributes.objectid
-        const collId = item.attributes.collid
+        const collectionId = item.attributes.collid
 
         const name = getElementValue(item, 'name')
 
@@ -57,6 +57,14 @@ export const fetchCollectionFromBGG = async (username: string) => {
 
         let subtitle = `Year: ${yearpublished}`
 
+        console.log('loading collection from xml', statusElement.attributes)
+
+        const collectionStatus: Partial<GameCollectionStatus> = {}
+
+        COLLECTION_STATES.map(([_, key]) => {
+          collectionStatus[key] = statusElement.attributes[key] === '1'
+        })
+
         collection.push({
           objectId,
           name,
@@ -64,15 +72,16 @@ export const fetchCollectionFromBGG = async (username: string) => {
           yearpublished,
           image,
           thumbnail,
-          collId,
-          status: statusElement.attributes,
+          collectionDetails: {
+            collectionId,
+            collectionStatus: collectionStatus as GameCollectionStatus,
+            wishlistPriority: statusElement.attributes['wishlist'],
+          },
         })
       }
 
       // not really duplicates, just multiple copies, need to figure out how that should be handled? HELP???
       collection = removeDuplicates(collection, 'objectId')
-
-      return collection
     } else {
       // @ts-ignore
       Sentry.captureMessage(
@@ -84,7 +93,8 @@ export const fetchCollectionFromBGG = async (username: string) => {
     // @ts-ignore
     Sentry.captureException(error)
   }
-  return []
+  console.log(collection[0])
+  return collection
 }
 
 export function getRatingColor(rating) {

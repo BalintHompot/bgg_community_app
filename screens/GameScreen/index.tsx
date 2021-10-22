@@ -5,7 +5,9 @@ import HTMLView from 'react-native-htmlview'
 import React, { useDispatch, useEffect, useGlobal } from 'reactn'
 import Spinner from '../../components/Spinner'
 import { getRatingColor } from '../../shared/bgg/collection'
+import { GameStats, Polls } from '../../shared/bgg/types'
 import { navigationType, routeType } from '../../shared/propTypes'
+import { getGameDetailsReducer } from '../../shared/store/reducers/game'
 import styleconstants, {
   layoutAnimation
 } from '../../shared/styles/styleconstants'
@@ -14,9 +16,6 @@ import ImageList from './ImageList'
 import LogPlayButton from './LogPlayButton'
 import styles from './styles'
 
-
-
-
 const GameScreen = ({ navigation, route }) => {
   const { game } = route.params
   const { objectId } = game
@@ -24,16 +23,17 @@ const GameScreen = ({ navigation, route }) => {
     { details, itemStats, images, playCount, collectionDetails } = {
       details: null,
       images: null,
-      itemStats: { item: { rankinfo: [] } },
+      itemStats: { item: { rankinfo: [] } } as GameStats,
       playCount: 0,
       collectionDetails: { collectionStatus: {} },
     },
   ] = useGlobal(`game/${objectId}`)
-  console.log('details', details)
 
-  console.log('GameScreen/index.js', collectionDetails)
+  // console.log(JSON.stringify(useGlobal(`game/${objectId}`), null,2))
 
-  const getGameDetails = useDispatch('getGameDetails')
+  // console.log('GameScreen/index.js', collectionDetails)
+
+  const getGameDetails = useDispatch(getGameDetailsReducer)
 
   useEffect(() => {
     layoutAnimation()
@@ -96,7 +96,9 @@ const GameScreen = ({ navigation, route }) => {
 
   const _renderHeaderName = () => {
     const {
-      item: { stats: stats = { average: '0' } },
+      item: {
+        stats: stats = { average: '0', usersrated: '0', numcomments: '0' },
+      },
     } = itemStats
 
     let ratingBGColor, ratingText
@@ -125,7 +127,6 @@ const GameScreen = ({ navigation, route }) => {
 
         <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
           <Text
-            id="headerText"
             style={{
               width: '100%',
               fontSize: 18,
@@ -160,21 +161,36 @@ const GameScreen = ({ navigation, route }) => {
   const _trimTo = (decimal, places) =>
     (Math.round(decimal * 10) / 10).toFixed(places)
 
-  const _playerCounts = (cnts = {}) => {
-    if (cnts.min !== undefined) {
-      cnts = [cnts.min, cnts.max]
-    }
+  type MinMax = {
+    min: number
+    max: number
+  }
 
-    if (cnts[0] == cnts[1]) {
-      return cnts[0]
+  const _playerCounts = (cnts: MinMax) => {
+    if (!cnts) return '--'
+    const playSpread = [cnts.min, cnts.max]
+
+    if (playSpread[0] == playSpread[1]) {
+      return playSpread[0]
     } else {
-      return `${cnts[0]}-${cnts[1]}`
+      return `${playSpread[0]}-${playSpread[1]}`
+    }
+  }
+
+  const _renderUserPlayerVotes = (polls: Polls) => {
+    if (polls.userplayers.totalvotes === '0') {
+      return(<Text style={styles.statsText}>(no votes)</Text>)
+    } else {
+      return(<Text style={styles.statsText}>
+        Community: {_playerCounts(polls.userplayers.recommended[0])} -- Best:{' '}
+        {_playerCounts(polls.userplayers.best[0])}
+      </Text>)
     }
   }
 
   const _renderGameStats = (details) => {
     const {
-      item: { polls: polls },
+      item: { polls },
     } = itemStats
 
     if (polls !== undefined && details !== null) {
@@ -184,14 +200,15 @@ const GameScreen = ({ navigation, route }) => {
             <Text style={styles.statsTitle}>
               {details.minplayers}-{details.maxplayers} Players
             </Text>
-            <Text style={styles.statsText}>
-              Community: {_playerCounts(polls.userplayers.recommended[0])} --
-              Best: {_playerCounts(polls.userplayers.best[0])}
-            </Text>
+            {_renderUserPlayerVotes(polls)}
           </View>
           <View style={styles.statsBox}>
             <Text style={styles.statsTitle}>
-              {_playerCounts([details.minplaytime, details.maxplaytime])} Min
+              {_playerCounts({
+                min: details.minplaytime,
+                max: details.maxplaytime,
+              })}{' '}
+              Min
             </Text>
             <Text style={styles.statsText}>Playing Time</Text>
           </View>
@@ -272,7 +289,11 @@ const GameScreen = ({ navigation, route }) => {
         />
       )
     } else {
-      return <Spinner />
+      return (
+        <Spinner>
+          <Text>Loading</Text>
+        </Spinner>
+      )
     }
   }
 
@@ -284,7 +305,7 @@ const GameScreen = ({ navigation, route }) => {
         <View style={styles.gameHeader}>{_renderMainImage(coverImages)}</View>
         {_renderHeaderRank()}
         <View style={{ padding: 10, backgroundColor: '#000000' }}>
-          {_renderHeaderName(route.params)}
+          {_renderHeaderName()}
         </View>
         <View style={{ padding: 10, backgroundColor: '#E7ECF1' }}>
           {_renderGameStats(details)}

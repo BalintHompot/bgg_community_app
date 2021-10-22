@@ -1,13 +1,15 @@
-import React, { useDispatch } from 'reactn'
-import { View, Text } from 'react-native'
-import { CheckBox, Button } from 'react-native-elements'
-
 import { Picker } from '@react-native-picker/picker'
 import PropTypes from 'prop-types'
-
-import { navigationType, routeType } from '../../shared/propTypes.js'
+import { Text, View } from 'react-native'
+import { Button, CheckBox } from 'react-native-elements'
+import React, { useDispatch } from 'reactn'
+import { COLLECTION_STATES, WISHLIST_VALUES } from '../../shared/constants'
+import { navigationType, routeType } from '../../shared/propTypes'
+import { setCollectionStatusReducer } from '../../shared/store/reducers/collection'
 import globalStyles from '../../shared/styles'
 import styles from './styles'
+
+
 
 const GameAddTo = ({ navigation, route }) => {
   const [collectionStatus, setCollectionStatusState] = React.useState(
@@ -17,10 +19,11 @@ const GameAddTo = ({ navigation, route }) => {
     route.params.wishlistPriority
   )
 
-  const setCollectionStatus = useDispatch('setCollectionStatus')
+  const setCollectionStatus = useDispatch(setCollectionStatusReducer)
 
   const save = async () => {
     const { game, collectionId } = route.params
+
     setCollectionStatus(game, collectionId, collectionStatus, wishlistPriority)
 
     navigation.goBack(null)
@@ -28,7 +31,6 @@ const GameAddTo = ({ navigation, route }) => {
 
   const headerRight = () => (
     <Button
-      small
       onPress={save}
       title="Save"
       buttonStyle={globalStyles.headerButton}
@@ -37,24 +39,6 @@ const GameAddTo = ({ navigation, route }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerRight })
   }, [navigation, save])
-
-  const collectionStates = [
-    ['Owned', 'own'],
-    ['Prevously Owned', 'prevowned'],
-    ['For Trade', 'fortrade'],
-    ['Want to Play', 'wanttoplay'],
-    ['Want to Buy', 'wanttobuy'],
-    ['Pre-ordered', 'preordered'],
-    ['Wishlist', 'wishlist'],
-  ]
-
-  const wishlistValues = [
-    { label: 'Must have', value: 1 },
-    { label: 'Love to have', value: 2 },
-    { label: 'Like to have', value: 3 },
-    { label: 'Thinking about it', value: 4 },
-    { label: "Don't buy this", value: 5 },
-  ]
 
   const toggle = (attr) => {
     let currentState = collectionStatus[attr]
@@ -68,7 +52,7 @@ const GameAddTo = ({ navigation, route }) => {
           selectedValue={wishlistPriority}
           onValueChange={setWishlistPriority}
         >
-          {wishlistValues.map(({ label, value }) => {
+          {WISHLIST_VALUES.map(({ label, value }) => {
             return <Picker.Item key={value} label={label} value={value} />
           })}
         </Picker>
@@ -78,7 +62,7 @@ const GameAddTo = ({ navigation, route }) => {
 
   const { name } = route.params.game
 
-  let statusCheckBoxes = collectionStates.map((status, i) => (
+  let statusCheckBoxes = COLLECTION_STATES.map((status, i) => (
     <CheckBox
       containerStyle={styles.checkboxContainer}
       title={status[0]}

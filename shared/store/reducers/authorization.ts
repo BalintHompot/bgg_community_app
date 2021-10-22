@@ -1,7 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage'
+import * as SecureStore from 'expo-secure-store'
 import initialState from '../helpers/initialState'
 import { persistGlobal } from '../helpers/persistence'
-
-import AsyncStorage from '@react-native-community/async-storage'
 import { BGGCredentials } from '../types'
 
 const accountKey = 'account'
@@ -20,6 +20,8 @@ export const setCredentialsReducer = (
 
 export const logOutReducer = async () => {
   await AsyncStorage.clear()
-  global.cookie = null
+  await SecureStore.deleteItemAsync('userName')
+  await SecureStore.deleteItemAsync('userPassword')
+
   return initialState
 }

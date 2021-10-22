@@ -1,5 +1,7 @@
 // initial state, expect nothing will come from async
 
+import { State } from 'reactn/default'
+
 const previewFiltersDefault = {
   name: '',
   priorities: [],
@@ -8,14 +10,16 @@ const previewFiltersDefault = {
   availability: [],
   preorders: [],
   filterTextOn: 'game',
-  sortBy: 'publisherGame'
+  sortBy: 'publisherGame',
 }
 
-export default {
+const initialSate: State = {
   collection: [],
   collectionFetchedAt: 0,
   loggedIn: false,
+  cookie: null,
   bggCredentials: {},
+  numUnread: 0
 
   // previews
   previewFetchedAt: 0,
@@ -27,5 +31,7 @@ export default {
   previewLoading: false,
   previewFilters: { ...previewFiltersDefault },
   previewFiltersDefault,
-  previewFiltersSet: false
+  previewFiltersSet: false,
 }
+
+export default initialSate

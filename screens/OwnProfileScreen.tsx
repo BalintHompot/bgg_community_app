@@ -43,7 +43,6 @@ const ProfileScreen = (props) => {
   let [loading] = useState(false)
 
   const [bggCredentials] = useGlobal('bggCredentials')
-  console.log({bggCredentials})
   const logOut = useDispatch(logOutReducer)
 
   const handleLogOut = () => {

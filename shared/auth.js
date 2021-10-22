@@ -6,7 +6,6 @@ const requestHeaders = new Headers({
 })
 
 export const logIn = async (username, password) => {
-  console.log('logging in with username', username)
   const init = {
     method: 'POST',
     body: JSON.stringify({
@@ -20,12 +19,11 @@ export const logIn = async (username, password) => {
   // so we can inspect the cookies... like a monster ;)
   const { status, headers } = await fetchRaw('/login/api/v1', init)
 
-  //console.log("login headers", headers)
-
   /// getting cookie
   global.cookie = null
 
   let cookieOriginal = headers.get('set-cookie')
+  console.log(cookieOriginal)
   let cookie = cookieOriginal.split(' ')
   //console.log("cookie ", cookie)
   let cookieFinal = ''
@@ -48,3 +46,6 @@ export const logIn = async (username, password) => {
     return { success: false, headers: null }
   }
 }
+
+export const getUserId = async () =>
+  fetchJSON('/api/users/current', requestHeaders)

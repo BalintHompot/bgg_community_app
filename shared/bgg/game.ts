@@ -1,8 +1,9 @@
+import { EMPTY_GAME_COLLECTION_STATUS } from '../constants'
 import { fetchJSON } from '../HTTP'
+import { CollectionDetails, GameCollectionStatus } from '../store/types'
+import { GameDetails, GameStats, Image } from './types'
 
 const baseURL = 'https://api.geekdo.com/api'
-
-import { GameDetails, GameStats, Image } from './types'
 
 export const fetchGameDetails = async (
   objectId: string
@@ -35,25 +36,23 @@ export const fetchPlayCount = async (objectId: string) => {
 export const fetchCollectionStatus = async (
   userId: string,
   objectId: string
-) => {
+): Promise<CollectionDetails> => {
   const url = `/api/collections?objectid=${objectId}&objecttype=thing&userid=${userId}`
   const { items } = await fetchJSON(url)
 
-  let collid = null,
-    status = null,
-    wishlistpriority
+  let collid: string
+  let wishlistpriority: number
+  let status: GameCollectionStatus
 
   if (items.length > 0) {
     ;[{ collid, status, wishlistpriority }] = items
+  } else {
+    status = EMPTY_GAME_COLLECTION_STATUS
   }
-
-  // fallback
-  status = status ? status : {}
 
   return {
     collectionId: collid,
     collectionStatus: status,
     wishlistPriority: wishlistpriority,
-    objectId,
   }
 }

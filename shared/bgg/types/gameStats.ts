@@ -9,7 +9,7 @@ export interface GameStats {
   }
 }
 
-interface Polls {
+export interface Polls {
   userplayers: UserPlayers
   playerage: string
   languagedependence: string
@@ -22,10 +22,15 @@ interface BoardGameWeight {
   votes: number
 }
 
-interface UserPlayers {
-  best: any[]
-  recommended: any[]
-  totalvotes: number
+export interface UserPlayers {
+  best?: Best[]
+  recommended?: Best[]
+  totalvotes: string
+}
+
+interface Best {
+  min: number
+  max: number
 }
 
 interface RankInfo {

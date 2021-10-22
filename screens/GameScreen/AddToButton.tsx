@@ -1,14 +1,18 @@
-import React from 'reactn'
-import { Button } from 'react-native-elements'
 import PropTypes from 'prop-types'
-import Octicon from 'react-native-vector-icons/Octicons'
+import { Button } from 'react-native-elements'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Octicon from 'react-native-vector-icons/Octicons'
+import React from 'reactn'
 import styles from './styles'
 
 const AddToButton = ({ navigation: { navigate }, game, collectionDetails }) => {
+
+
+  console.log('AddToButton', collectionDetails)
   const { collectionId, collectionStatus, wishlistPriority } = collectionDetails
 
-  const inCollection = Object.keys(collectionStatus).length > 0
+  console.log( Object.values(collectionStatus))
+  const inCollection = Object.values(collectionStatus).includes(true)
 
   const icon = inCollection ? (
     <Octicon name="check" color="green" size={18} />

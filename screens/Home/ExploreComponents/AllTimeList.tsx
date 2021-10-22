@@ -1,15 +1,19 @@
 import {
   FlatList,
-  Image, StyleSheet, Text, TouchableOpacity, View
-} from 'react-native'
-import { showMessage } from 'react-native-flash-message'
-import { Dropdown } from 'react-native-material-dropdown-v2'
-import React, { useEffect, useState } from 'reactn'
-import * as Sentry from 'sentry-expo'
-import { getRatingColor } from '../../../shared/bgg/collection'
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { MessageType, showMessage } from 'react-native-flash-message';
+import React, { useEffect, useState } from 'reactn';
+import { Native as Sentry } from 'sentry-expo';
+import { getRatingColor } from '../../../shared/bgg/collection';
 import styleconstants, {
   layoutAnimation
-} from '../../../shared/styles/styleconstants'
+} from '../../../shared/styles/styleconstants';
 
 const Hexagon = (props) => {
   return (
@@ -77,14 +81,13 @@ const stylesHex = StyleSheet.create({
 const AllTimeList = (props) => {
   const navigation = props.navigation
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [categoryListOpen, setCategoryListOpen] = useState(false)
+  const [categoryListSelection, setCategoryListSelection] = useState(null)
   const [allTimeList, setallTimeList] = useState([])
-  let [title, setTitle] = useState('Loading list')
   let [subTitle, setSubTitle] = useState('...')
-  let [subcats, setSubcats] = useState([])
-  let [selectedCat, setSelectedCat] = useState(null)
+  let [categories, setCategories] = useState([])
 
-  const showFlash = (message, type = 'danger') => {
+  const showFlash = (message, type: MessageType = 'danger') => {
     showMessage({ message, type, icon: 'auto' })
   }
 
@@ -93,17 +96,15 @@ const AllTimeList = (props) => {
       .then((ids) => {
         ids.json().then((idJson) => {
           //console.log("all time id-s", idJson)
-          let cats = []
-          for (var i in idJson) {
+          const cats = []
+          for (const i in idJson) {
             cats.push(idJson[i])
             cats[i].label = cats[i].name
             cats[i].value = cats[i].id
           }
-          setSubcats(cats)
+          setCategories(cats)
           var randInd = Math.floor(Math.random() * cats.length)
-
-          setSelectedCat(cats[randInd].name)
-          fetchallTimeList(cats[randInd].id)
+          setCategoryListSelection(cats[randInd].value)
         })
       })
       .catch((error) => {
@@ -111,16 +112,19 @@ const AllTimeList = (props) => {
         Sentry.captureException(error)
       })
   }
-  const fetchallTimeList = (listid) => {
-    let allTimeURL = 'https://api.geekdo.com/api/subdomaingamelists/' + listid
+
+  useEffect(() => {
+    if (categoryListSelection === null) return
+
+    const allTimeURL =
+      'https://api.geekdo.com/api/subdomaingamelists/' + categoryListSelection
+ 
     fetch(allTimeURL)
       .then((allTimeList) => {
         //console.log("all time list is", allTimeList.status)
         if (allTimeList.status === 200) {
           allTimeList.json().then((allTimeListJson) => {
-            //console.log("allTime list json", allTimeListJson)
             setallTimeList(allTimeListJson.games)
-            setTitle(allTimeListJson.title)
             setSubTitle(allTimeListJson.description)
           })
         } else {
@@ -134,15 +138,13 @@ const AllTimeList = (props) => {
         showFlash('There was a problem with loading the allTime list.')
         Sentry.captureException(error)
       })
-  }
+  }, [categoryListSelection])
 
   useEffect(() => {
     layoutAnimation()
 
-    if (!selectedCat) {
-      fetchallTimeIDs()
-    }
-  })
+    if (categories.length === 0) fetchallTimeIDs()
+  }, [categories])
 
   const AllTimeItem = (props) => {
     return (
@@ -216,32 +218,31 @@ const AllTimeList = (props) => {
   }
 
   return (
-    <View style={{ backgroundColor: 'white', marginVertical: 3, padding: 15 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <View
+      style={{
+        backgroundColor: 'white',
+        marginVertical: 3,
+        padding: 15,
+        zIndex: 1,
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', zIndex: 1 }}>
         <Text
           style={{ fontFamily: styleconstants.primaryFontBold, fontSize: 20 }}
         >
           {'Best games of all time in: '}
         </Text>
 
-        <Dropdown
-          dropdownOffset={{
-            top: 0,
-            left: 0,
-          }}
-          itemCount={subcats.length}
+        <DropDownPicker
+          listMode="SCROLLVIEW"
+          placeholder={categoryListSelection?.name}
           containerStyle={{ width: 150, margin: 0, height: 30 }}
-          inputContainerStyle={{
-            borderBottomWidth: 2,
-            borderBottomColor: styleconstants.bggorange,
-          }}
           style={{ margin: 0, height: 30 }}
-          data={subcats}
-          value={selectedCat} //use local state if set, otherwise global
-          onChangeText={(f, ind) => {
-            setSelectedCat(f)
-            fetchallTimeList(subcats[ind].id)
-          }}
+          items={categories}
+          open={categoryListOpen}
+          setOpen={setCategoryListOpen}
+          value={categoryListSelection}
+          setValue={setCategoryListSelection}
         />
       </View>
       <Text style={{ fontFamily: styleconstants.primaryFont, fontSize: 16 }}>
@@ -258,7 +259,7 @@ const AllTimeList = (props) => {
         {allTimeList.length > 0 ? (
           <FlatList
             data={allTimeList}
-            keyExtractor={({item}) => item.id}
+            keyExtractor={({ item }) => item.id}
             renderItem={({ item, index }) => {
               return (
                 <AllTimeItem

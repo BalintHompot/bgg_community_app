@@ -1,19 +1,12 @@
 import { setGlobal, addReducers } from 'reactn'
+import addReactNDevTools from 'reactn-devtools'
 
 import initialState from './helpers/initialState'
 import { getPersisted } from './helpers/persistence'
 
-import * as collectionReducers from './reducers/collection'
-// import * as authReducers from './reducers/authorization'
-import * as gameReducers from './reducers/game'
 import * as previewReducers from './reducers/preview'
 
-// collection
-addReducers(collectionReducers)
-// auth
-// addReducers(authReducers)
-// game
-addReducers(gameReducers)
+addReactNDevTools()
 // preview
 addReducers(previewReducers)
 

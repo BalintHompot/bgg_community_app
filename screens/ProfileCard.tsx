@@ -15,7 +15,6 @@ const ProfileCard = (props: ProfileProps) => {
   let [userFetched, setUserFetched] = useState(false)
 
   let username = props.username
-  console.log({username, userFetched})
 
   const fetchUserDetails = async () => {
     // getting user info
