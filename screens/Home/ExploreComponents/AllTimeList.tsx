@@ -11,6 +11,7 @@ import { MessageType, showMessage } from 'react-native-flash-message';
 import React, { useEffect, useState } from 'reactn';
 import { Native as Sentry } from 'sentry-expo';
 import { getRatingColor } from '../../../shared/bgg/collection';
+import { fetchRaw } from '../../../shared/HTTP';
 import styleconstants, {
   layoutAnimation
 } from '../../../shared/styles/styleconstants';
@@ -84,15 +85,15 @@ const AllTimeList = (props) => {
   const [categoryListOpen, setCategoryListOpen] = useState(false)
   const [categoryListSelection, setCategoryListSelection] = useState(null)
   const [allTimeList, setallTimeList] = useState([])
-  let [subTitle, setSubTitle] = useState('...')
-  let [categories, setCategories] = useState([])
+  const [subTitle, setSubTitle] = useState('...')
+  const [categories, setCategories] = useState([])
 
   const showFlash = (message, type: MessageType = 'danger') => {
     showMessage({ message, type, icon: 'auto' })
   }
 
   const fetchallTimeIDs = () => {
-    fetch('https://api.geekdo.com/api/subdomains?domain=boardgame')
+    fetchRaw('/api/subdomains?domain=boardgame')
       .then((ids) => {
         ids.json().then((idJson) => {
           //console.log("all time id-s", idJson)
@@ -117,9 +118,9 @@ const AllTimeList = (props) => {
     if (categoryListSelection === null) return
 
     const allTimeURL =
-      'https://api.geekdo.com/api/subdomaingamelists/' + categoryListSelection
+      '/api/subdomaingamelists/' + categoryListSelection
  
-    fetch(allTimeURL)
+    fetchRaw(allTimeURL)
       .then((allTimeList) => {
         //console.log("all time list is", allTimeList.status)
         if (allTimeList.status === 200) {

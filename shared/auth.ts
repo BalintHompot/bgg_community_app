@@ -1,4 +1,4 @@
-import { fetchJSON } from './HTTP'
+import { fetchJSON, fetchRaw } from './HTTP'
 
 export const logIn = async (username, password) => {
   const init = {
@@ -6,10 +6,9 @@ export const logIn = async (username, password) => {
     body: JSON.stringify({
       credentials: { username, password },
     }),
-    credentials: 'include',
   }
 
-  const { status } = await fetchJSON('/login/api/v1', init)
+  const { status } = await fetchRaw('/login/api/v1', init)
 
   if (status === 200 || status === 202) {
     return { success: true }

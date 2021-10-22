@@ -5,26 +5,34 @@ import { DEFAULT_BGG_URL } from './constants'
 import { logger } from './debug'
 import { logOutReducer } from './store/reducers/authorization'
 
+type FetchArgs = RequestInit & {
+  body: any
+}
+
 export const fetchRaw = async (path, args = {}, headers = {}) => {
   headers = new Headers(
     Object.assign(
       {
-        accept: 'application/json',
-        'content-type': 'application/json;charset=UTF-8',
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
         // Referer: `${DEFAULT_BGG_URL}/`,
       },
       headers
     )
   )
   const url = path.startsWith('http') ? path : `${DEFAULT_BGG_URL}${path}`
-  console.log(url, { credentials: 'include', ...args, headers })
+  // console.log(url, { credentials: 'include', ...args, headers })
   return fetch(url, { credentials: 'include', ...args, headers })
 }
 
 export const asyncFetch = async ({ path, args = {}, headers = {} }) =>
   fetchJSON(path, args, headers)
 
-export const fetchJSON = async (path, args: RequestInit = {}, headers = {}) => {
+export const fetchJSON = async (
+  path,
+  args: Partial<FetchArgs> = {},
+  headers = {}
+) => {
   try {
     const { body } = args
     body ? (args.body = JSON.stringify(body)) : null
@@ -50,7 +58,11 @@ export const fetchJSON = async (path, args: RequestInit = {}, headers = {}) => {
   }
 }
 
-export const fetchXML = async (path, args: RequestInit = {}, headers = {}) => {
+export const fetchXML = async (
+  path,
+  args: Partial<RequestInit> = {},
+  headers = {}
+) => {
   try {
     const { body } = args
     body ? (args.body = JSON.stringify(body)) : null

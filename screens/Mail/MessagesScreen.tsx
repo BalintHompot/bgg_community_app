@@ -1,8 +1,8 @@
 import { useFocusEffect } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import DropDownPicker from 'react-native-dropdown-picker'
 import React, { useState } from 'reactn'
-// import { Dropdown } from 'react-native-material-dropdown-v2'
 import { Native as Sentry } from 'sentry-expo'
 import { fetchRaw } from '../../shared/HTTP'
 import styles from '../../shared/styles'
@@ -10,16 +10,24 @@ import styleconstants from '../../shared/styles/styleconstants'
 import MessageThumbNail from '../MessageThumbNail'
 import ConversationScreen from './ConversationScreen'
 
+const folders = [
+  {
+    label: 'inbox',
+    value: 'inbox',
+  },
+  {
+    label: 'outbox',
+    value: 'outbox',
+  },
+]
+
 const MessagesScreen = (props) => {
-  let [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-  let [messages, setMessages] = useState([])
-  let [folder, setFolder] = useState('inbox')
-  let [readUpdateDummy, setReadUpdate] = useState(0)
-
-  let [initRefetch, setInitRefetch] = useState(
-    props.route.params && props.route.params.refetch
-  )
+  const [messages, setMessages] = useState([])
+  const [folderListOpen, setFolderListOpen] = useState(false)
+  const [folder, setFolder] = useState('inbox')
+  const [readUpdateDummy, setReadUpdate] = useState(0)
 
   async function getMessages(folderName) {
     setLoading(true)
@@ -115,24 +123,13 @@ const MessagesScreen = (props) => {
 
   useFocusEffect(
     React.useCallback(() => {
-    if (messages.length === 0 || initRefetch) {
-        initRefetch = false
-        //console.log("fetching messages")
-        getMessages(folder)
-      }
-    }, [messages.length])
+      if (!folder) return null
+
+      // console.log("fetching messages", folder)
+      getMessages(folder)
+    }, [folder])
   )
 
-  const folders = [
-    {
-      label: 'inbox',
-      value: 'inbox',
-    },
-    {
-      label: 'outbox',
-      value: 'outbox',
-    },
-  ]
   return (
     <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
       <View
@@ -142,6 +139,7 @@ const MessagesScreen = (props) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          zIndex: 1,
         }}
       >
         <Text
@@ -153,22 +151,22 @@ const MessagesScreen = (props) => {
         >
           Folder:{' '}
         </Text>
-        {/* <Dropdown
-          dropdownOffset={{
-            top: 0,
-            left: 0
-          }}
-          itemCount={folders.length}
+        <DropDownPicker
+          listMode="SCROLLVIEW"
+          // placeholder={folder?.label}
           containerStyle={{ width: 100, margin: 0, height: 30 }}
-          inputContainerStyle={{ borderBottomWidth: 2, borderBottomColor: styleconstants.bggorange }}
           style={{ margin: 0, height: 30 }}
-          data={folders}
-          value={folder} //use local state if set, otherwise global
-          onChangeText={f => {
+          items={folders}
+          open={folderListOpen}
+          setOpen={setFolderListOpen}
+          value={folder}
+          setValue={setFolder}
+        />
+
+        {/* onChangeText={f => {
             setFolder(f)
             getMessages(f)
-          }}
-        /> */}
+          }} */}
       </View>
       {loading ? (
         <View style={styles.emptyView}>
