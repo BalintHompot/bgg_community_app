@@ -14,7 +14,7 @@ import { Badge } from 'react-native-elements'
 import FlashMessage from 'react-native-flash-message'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import React, { useGlobal, useState } from 'reactn'
+import React, { useDispatch, useGlobal, useState } from 'reactn'
 import * as Sentry from 'sentry-expo'
 import CollectionScreen from './screens/Collection/CollectionScreen'
 import HomeScreen from './screens/Home/HomeScreen'
@@ -22,9 +22,9 @@ import LoginScreen from './screens/LoginScreen'
 import MessagesScreen from './screens/Mail/MessagesScreen'
 import ProfileScreen from './screens/OwnProfileScreen'
 import { getUserId, logIn } from './shared/auth'
-import { getNumUnread } from './shared/FetchWithCookie'
 import { findCoordinates } from './shared/location'
 import { setupStore } from './shared/store'
+import { getNumUnreadReducer } from './shared/store/reducers/geekmail/fetchUnreadCount'
 
 Sentry.init({
   dsn: SENTRY_CONFIG,
@@ -39,23 +39,26 @@ setupStore()
 const App = () => {
   const [isReady, setIsReady] = useState(false)
   const [userDetails, setUserDetails] = useState(false)
-
   const [numUnread] = useGlobal('numUnread')
 
-  const attemptBGGLoginInBackground = async (username, password) => {
+  const getNumUnread = useDispatch(getNumUnreadReducer)
+
+  const ensureBGGSession = async (username: string, password: string) => {
     if (username && password) {
       try {
+        // check if we can get the current user
         const { userid } = await getUserId()
-        let success = false
 
-        if (userid) success = true
+        console.log('ensureBGGSession', { userid })
 
-        if (!success) success = await (await logIn(username, password)).success
-
-        if (success) {
-          setUserDetails(true)
-          await getNumUnread()
+        // if not, attempt to log 
+        if (!userid) {
+          const { success } = await logIn(username, password)
+          console.log({ success })
         }
+
+        setUserDetails(true)
+        await getNumUnread()
       } catch (error) {
         console.warn(error)
         Sentry.Native.captureException(error)
@@ -84,7 +87,7 @@ const App = () => {
       valuePassword = await SecureStore.getItemAsync('userPassword')
     }
 
-    await attemptBGGLoginInBackground(valueName, valuePassword)
+    await ensureBGGSession(valueName, valuePassword)
 
     // //global.location = { "city": "Utrecht", "country": "Netherlands" }
 

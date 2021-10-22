@@ -2,22 +2,21 @@ import 'reactn'
 import { CollectionItem } from './bgg/types'
 import { BGGCredentials, GameCache } from './store/types'
 
+const reducerDefaults = { global: State, dispatch: Dispatch }
+
 declare module 'reactn/default' {
   export interface Reducers {
-    getGameDetails: (
-      global: State,
-      dispatch: Dispatch,
-      objectId: string
-    ) => GameCache
+    getGameDetails: (...reducerDefaults, objectId: string) => GameCache
     setCredentials: (
-      global: State,
-      dispatch: Dispatch,
+      ...reducerDefaults,
       bggCredentials: BGGCredentials
     ) => Pick<State, 'loggedIn', 'bggCredentials'>
     fetchCollection: (
-      global: State,
-      dispatch: Dispatch,
+      ...reducerDefaults,
       bggCredentials: BGGCredentials
+    ) => Pick<State, 'loggedIn', 'bggCredentials'>
+    getNumUnreadReducer: (
+      ...reducerDefaults
     ) => Pick<State, 'loggedIn', 'bggCredentials'>
   }
 
@@ -27,7 +26,6 @@ declare module 'reactn/default' {
     collection: CollectionItem[]
     collectionFetchedAt: number
     numUnread: number
-    cookie?: string
     [key: string]: GameCache
   }
 }

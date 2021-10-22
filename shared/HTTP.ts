@@ -1,36 +1,30 @@
-import { SENTRY_CONFIG } from 'react-native-dotenv'
-import * as Sentry from 'sentry-expo'
-Sentry.init({
-  dsn: SENTRY_CONFIG,
-  enableInExpoDevelopment: false,
-  debug: true,
-})
-
-import { useDispath } from 'reactn'
 import { showMessage } from 'react-native-flash-message'
-import { logOutReducer } from '../shared/store/reducers/authorization'
+import { useDispatch } from 'reactn'
+import { Native as Sentry } from 'sentry-expo'
+import { DEFAULT_BGG_URL } from './constants'
 import { logger } from './debug'
-
-const baseURL = 'https://bgg.cc'
+import { logOutReducer } from './store/reducers/authorization'
 
 export const fetchRaw = async (path, args = {}, headers = {}) => {
   headers = new Headers(
     Object.assign(
       {
-        Accept: 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
+        accept: 'application/json',
+        'content-type': 'application/json;charset=UTF-8',
+        // Referer: `${DEFAULT_BGG_URL}/`,
       },
       headers
     )
   )
-  const url = path.startsWith('http') ? path : `${baseURL}${path}`
+  const url = path.startsWith('http') ? path : `${DEFAULT_BGG_URL}${path}`
+  console.log(url, { credentials: 'include', ...args, headers })
   return fetch(url, { credentials: 'include', ...args, headers })
 }
 
 export const asyncFetch = async ({ path, args = {}, headers = {} }) =>
   fetchJSON(path, args, headers)
 
-export const fetchJSON = async (path, args = {}, headers = {}) => {
+export const fetchJSON = async (path, args: RequestInit = {}, headers = {}) => {
   try {
     const { body } = args
     body ? (args.body = JSON.stringify(body)) : null
@@ -56,7 +50,7 @@ export const fetchJSON = async (path, args = {}, headers = {}) => {
   }
 }
 
-export const fetchXML = async (path, args = {}, headers = {}) => {
+export const fetchXML = async (path, args: RequestInit = {}, headers = {}) => {
   try {
     const { body } = args
     body ? (args.body = JSON.stringify(body)) : null
@@ -84,7 +78,7 @@ export const fetchXML = async (path, args = {}, headers = {}) => {
 }
 
 const forceLogOut = () => {
-  const logOut = useDispath(logOutReducer)
+  const logOut = useDispatch(logOutReducer)
   logOut()
 
   showMessage({

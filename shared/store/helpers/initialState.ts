@@ -17,9 +17,8 @@ const initialSate: State = {
   collection: [],
   collectionFetchedAt: 0,
   loggedIn: false,
-  cookie: null,
   bggCredentials: {},
-  numUnread: 0
+  numUnread: 0,
 
   // previews
   previewFetchedAt: 0,

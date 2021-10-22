@@ -1,29 +1,19 @@
-import React, { useState, useEffect, useGlobal } from 'reactn'
-
-import { createStackNavigator } from '@react-navigation/stack'
 import { useFocusEffect } from '@react-navigation/native'
-
+import { createStackNavigator } from '@react-navigation/stack'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'reactn'
+// import { Dropdown } from 'react-native-material-dropdown-v2'
+import { Native as Sentry } from 'sentry-expo'
 import { fetchRaw } from '../../shared/HTTP'
-import {
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native'
 import styles from '../../shared/styles'
-import { func } from 'prop-types'
+import styleconstants from '../../shared/styles/styleconstants'
 import MessageThumbNail from '../MessageThumbNail'
 import ConversationScreen from './ConversationScreen'
-import { manipulateAsync } from 'expo-image-manipulator'
-import styleconstants from '../../shared/styles/styleconstants'
-// import { Dropdown } from 'react-native-material-dropdown-v2'
-import * as Sentry from 'sentry-expo'
 
 const MessagesScreen = (props) => {
   let [loading, setLoading] = useState(true)
 
-  let [messages, setMessages] = useState('')
+  let [messages, setMessages] = useState([])
   let [folder, setFolder] = useState('inbox')
   let [readUpdateDummy, setReadUpdate] = useState(0)
 
@@ -33,46 +23,17 @@ const MessagesScreen = (props) => {
 
   async function getMessages(folderName) {
     setLoading(true)
-    //console.log("global cookie", global.cookie)
-
-    // can't fetchJSON here as we want the full http response
-    // so we can inspect the cookies... like a monster ;)
-
-    var myHeaders = new Headers()
-    myHeaders.append('authority', 'boardgamegeek.com')
-    myHeaders.append(
-      'sec-ch-ua',
-      '"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"'
-    )
-    myHeaders.append(
-      'accept',
-      'text/javascript, text/html, application/xml, text/xml, */*'
-    )
-    myHeaders.append('x-requested-with', 'XMLHttpRequest')
-    myHeaders.append('sec-ch-ua-mobile', '?0')
-    myHeaders.append(
-      'user-agent',
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
-    )
-    myHeaders.append('sec-fetch-site', 'same-origin')
-    myHeaders.append('sec-fetch-mode', 'cors')
-    myHeaders.append('sec-fetch-dest', 'empty')
-    myHeaders.append('referer', 'https://boardgamegeek.com/geekmail')
-    myHeaders.append('accept-language', 'en-US,en;q=0.9')
-    myHeaders.append('cookie', global.cookie)
 
     var requestOptions = {
       method: 'GET',
-      headers: myHeaders,
       redirect: 'follow',
-      credentials: 'omit',
     }
 
     let path =
-      'https://boardgamegeek.com/geekmail_controller.php?action=viewfolder&ajax=1&folder=' +
+      '/geekmail_controller.php?action=viewfolder&ajax=1&folder=' +
       folderName +
       '&pageID=1&searchid=0&label='
-    fetch(path, requestOptions)
+    fetchRaw(path, requestOptions)
       .then((resp) => {
         if (resp.status === 200) {
           resp.text().then((rText) => {
@@ -82,7 +43,6 @@ const MessagesScreen = (props) => {
               let msgRead = rText.match(
                 /(font-style:|font-weight:)(.*?)subject_/g
               )
-              //console.log("messages read status", msgRead)
 
               let regexMsgs = mainTable.match(/>(.*?)</g)
               let msgs = []
@@ -135,7 +95,7 @@ const MessagesScreen = (props) => {
               setMessages(msgs)
               setLoading(false)
             } catch (error) {
-              console.log('problem processing the messages', error)
+              console.warn('problem processing the messages', error)
               setMessages([])
               setLoading(false)
               Sentry.captureException(error)
@@ -148,19 +108,19 @@ const MessagesScreen = (props) => {
         }
       })
       .catch((error) => {
-        console.log('error', error)
+        console.error(error)
         Sentry.captureException(error)
       })
   }
 
   useFocusEffect(
     React.useCallback(() => {
-      if (messages === '' || initRefetch) {
+    if (messages.length === 0 || initRefetch) {
         initRefetch = false
         //console.log("fetching messages")
         getMessages(folder)
       }
-    })
+    }, [messages.length])
   )
 
   const folders = [

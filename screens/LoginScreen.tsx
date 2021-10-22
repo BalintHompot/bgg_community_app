@@ -16,8 +16,8 @@ import { MessageType, showMessage } from 'react-native-flash-message'
 import React, { useDispatch, useState } from 'reactn'
 import { Native as Sentry } from 'sentry-expo'
 import { getUserId, logIn } from '../shared/auth'
-import { getNumUnread } from '../shared/FetchWithCookie'
 import { setCredentialsReducer } from '../shared/store/reducers/authorization'
+import { getNumUnreadReducer } from '../shared/store/reducers/geekmail/fetchUnreadCount'
 import styleconstants from '../shared/styles/styleconstants'
 
 const height = Dimensions.get('screen').height
@@ -68,6 +68,7 @@ const LoginScreen = (props) => {
   let [loading, setLoading] = useState(false)
 
   const setCredentials = useDispatch(setCredentialsReducer)
+  const getNumUnread = useDispatch(getNumUnreadReducer)
 
   const usernameChange = (username) => {
     setUsername(username)
@@ -205,9 +206,7 @@ const LoginScreen = (props) => {
               }}
             >
               <Input
-                id="usernameInput"
                 label="BGG Username"
-                focus={true}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 spellCheck={false}
@@ -220,23 +219,19 @@ const LoginScreen = (props) => {
               />
 
               <Input
-                id="passwordInput"
                 label="BGG Password"
                 autoCapitalize="none"
-                containerStyle={{ marginTop: 25 }}
+                containerStyle={{ marginTop: 25, padding: 15 }}
                 onChangeText={passwordChange}
                 secureTextEntry={true}
                 value={password}
                 errorMessage={passwordError}
-                containerStyle={{ padding: 15 }}
                 inputStyle={{ color: 'white' }}
                 labelStyle={{ color: 'white' }}
               />
             </View>
             <View style={[customStyles.buttonContainer, { width: '100%' }]}>
               <Button
-                id="submitButton"
-                backgroundColor="#03A9F4"
                 style={customStyles.button}
                 onPress={handleLogIn}
                 loading={loading}

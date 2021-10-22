@@ -29,3 +29,5 @@ export const EMPTY_GAME_COLLECTION_STATUS = {
 export const STORAGE_KEYS = {
   collection: 'collection',
 }
+
+export const DEFAULT_BGG_URL = 'https://bgg.cc'
