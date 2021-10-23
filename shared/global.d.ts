@@ -1,5 +1,6 @@
 import 'reactn'
 import { CollectionItem } from './bgg/types'
+import { PreviewFilterType } from './store/helpers/initialState'
 import { BGGCredentials, GameCache } from './store/types'
 
 const reducerDefaults = { global: State, dispatch: Dispatch }
@@ -26,6 +27,7 @@ declare module 'reactn/default' {
     collection: CollectionItem[]
     collectionFetchedAt: number
     numUnread: number
+    previewFilters: PreviewFilterType
     [key: string]: GameCache
   }
 }

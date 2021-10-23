@@ -2,7 +2,18 @@
 
 import { State } from 'reactn/default'
 
-const previewFiltersDefault = {
+export type PreviewFilterType = {
+  name: string
+  priorities: any[]
+  halls: any[]
+  seen: any[]
+  availability: any[]
+  preorders: any[]
+  filterTextOn: string
+  sortBy: string
+}
+
+export const previewFiltersDefault: PreviewFilterType = {
   name: '',
   priorities: [],
   halls: [],
