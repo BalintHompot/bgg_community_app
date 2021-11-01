@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import styleconstants from '../../shared/styles/styleconstants'
+import styleConstants from '../../shared/styles/styleconstants'
 
 export default StyleSheet.create({
   itemContainer: {
@@ -21,16 +21,16 @@ export default StyleSheet.create({
   headerRatingsText: {
     paddingTop: 2,
     color: '#ffffff',
-    height: 20,
+    fontFamily: styleConstants.primaryFont,
+    fontSize: 12,
   },
   headerImage: {
     width: '90%',
     height: '92%',
   },
-  headerIcon: {
+  headerIconContainer: {
     width: 50,
     height: 50,
-    borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -50,24 +50,24 @@ export default StyleSheet.create({
     height: 65,
   },
   statsTitle: {
-    fontFamily: styleconstants.primaryFontBold,
+    fontFamily: styleConstants.primaryFontBold,
     color: '#282D5C',
     width: '100%',
     textAlign: 'center',
     fontSize: 16,
   },
   statsText: {
-    fontFamily: styleconstants.primaryFont,
+    fontFamily: styleConstants.primaryFont,
     color: '#004FAE',
     width: '100%',
     textAlign: 'center',
     fontSize: 12,
   },
   creditText: {
-    fontFamily: styleconstants.primaryFont,
+    fontFamily: styleConstants.primaryFont,
   },
   creditTitle: {
-    fontFamily: styleconstants.primaryFontBold,
+    fontFamily: styleConstants.primaryFontBold,
   },
   descriptionHeader: {
     borderBottomColor: '#292e62',
@@ -75,7 +75,7 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   descriptionHeaderText: {
-    fontFamily: styleconstants.primaryFontBold,
+    fontFamily: styleConstants.primaryFontBold,
     fontSize: 18,
     color: '#292e62',
     marginBottom: 10,
@@ -93,7 +93,11 @@ export default StyleSheet.create({
   headerButton: {
     backgroundColor: '#fff',
   },
-  headerButtonText: { fontFamily: styleconstants.primaryFontBold, fontSize: 14, color: '#000' },
+  headerButtonText: {
+    fontFamily: styleConstants.primaryFontBold,
+    fontSize: 14,
+    color: '#000',
+  },
   headerButtonContainer: {
     borderWidth: 0,
     height: 36,

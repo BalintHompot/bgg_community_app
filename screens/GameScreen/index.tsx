@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { Icon } from 'react-native-elements'
 import HTMLView from 'react-native-htmlview'
 import React, { useDispatch, useEffect, useGlobal } from 'reactn'
+import Hexagon from '../../components/Hexagon'
 import Spinner from '../../components/Spinner'
-import { getRatingColor } from '../../shared/bgg/collection'
 import { GameStats, Polls } from '../../shared/bgg/types'
 import { navigationType, routeType } from '../../shared/propTypes'
 import { getGameDetailsReducer } from '../../shared/store/reducers/game'
-import styleconstants, {
+import styleConstants, {
   layoutAnimation
 } from '../../shared/styles/styleconstants'
 import AddToButton from './AddToButton'
+import HeaderLinks from './HeaderLinks'
 import ImageList from './ImageList'
 import LogPlayButton from './LogPlayButton'
 import styles from './styles'
@@ -40,60 +40,6 @@ const GameScreen = ({ navigation, route }) => {
     if (details === null) getGameDetails(objectId)
   }, [game])
 
-  const _renderHeaderRank = () => {
-    let {
-      item: { rankinfo: rankInfo },
-    } = itemStats
-
-    if (rankInfo && rankInfo.length > 0) {
-      return (
-        <View style={styles.headerRatings}>
-          <Icon
-            name="crown"
-            type="foundation"
-            color="#e66c06"
-            size={20}
-            containerStyle={{
-              marginRight: 4,
-              height: 20,
-            }}
-          />
-          <Text
-            style={[
-              styles.headerRatingsText,
-              {
-                fontFamily: styleconstants.primaryFontBold,
-              },
-            ]}
-          >
-            RANK:{' '}
-          </Text>
-          {rankInfo.map((rank, i) => (
-            <Text
-              key={i}
-              style={[
-                styles.headerRatingsText,
-                {
-                  fontFamily: styleconstants.primaryFont,
-                  paddingRight: 8,
-                },
-              ]}
-            >
-              {rank.veryshortprettyname.toUpperCase().trim()}:{' '}
-              {rank.rank.toUpperCase()}
-            </Text>
-          ))}
-        </View>
-      )
-    } else {
-      return (
-        <View style={styles.headerRatings}>
-          <Text>Loading</Text>
-        </View>
-      )
-    }
-  }
-
   const _renderHeaderName = () => {
     const {
       item: {
@@ -101,28 +47,10 @@ const GameScreen = ({ navigation, route }) => {
       },
     } = itemStats
 
-    let ratingBGColor, ratingText
-
-    if (!stats.average || stats.average === '0') {
-      ratingBGColor = '#999999'
-      ratingText = '--'
-    } else {
-      ratingBGColor = getRatingColor(stats.average)
-      ratingText = _trimTo(stats.average, 1)
-    }
-
     return (
       <View style={{ flexDirection: 'row' }}>
-        <View style={[styles.headerIcon, { backgroundColor: ratingBGColor }]}>
-          <Text
-            style={{
-              color: '#ffffff',
-              fontSize: 24,
-              fontFamily: styleconstants.primaryFontBold,
-            }}
-          >
-            {ratingText}
-          </Text>
+        <View style={styles.headerIconContainer}>
+          <Hexagon rating={stats.average} large={true} />
         </View>
 
         <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -130,8 +58,8 @@ const GameScreen = ({ navigation, route }) => {
             style={{
               width: '100%',
               fontSize: 18,
-              fontFamily: styleconstants.primaryFontBold,
-              color: '#ffffff',
+              fontFamily: styleConstants.primaryFontBold,
+              color: '#fff',
             }}
           >
             {game.name}
@@ -142,20 +70,44 @@ const GameScreen = ({ navigation, route }) => {
               </Text>
             ) : null}
           </Text>
+          {details ? (
+            <Text
+              style={{
+                width: '100%',
+                fontSize: 14,
+                paddingTop: 2,
+                paddingBottom: 8,
+                fontFamily: styleConstants.primaryFont,
+                color: '#fff',
+              }}
+            >
+              {details.short_description}
+            </Text>
+          ) : null}
           <Text
             style={{
               width: '100%',
               fontSize: 14,
               paddingTop: 2,
-              fontFamily: styleconstants.primaryFont,
-              color: '#ffffff',
+              fontFamily: styleConstants.primaryFontBold,
+              color: '#fff',
             }}
           >
-            {stats.usersrated} Ratings & {stats.numcomments} Comments
+            {abbreviateCount(stats.usersrated)} Ratings &{' '}
+            {abbreviateCount(stats.numcomments)} Comments
           </Text>
         </View>
       </View>
     )
+  }
+
+  const abbreviateCount = (num: string) => {
+    const parsedNum = parseInt(num)
+    if (parsedNum > 999) {
+      return _trimTo(parsedNum / 1000, 1)
+    } else {
+      return num
+    }
   }
 
   const _trimTo = (decimal, places) =>
@@ -179,12 +131,14 @@ const GameScreen = ({ navigation, route }) => {
 
   const _renderUserPlayerVotes = (polls: Polls) => {
     if (polls.userplayers.totalvotes === '0') {
-      return(<Text style={styles.statsText}>(no votes)</Text>)
+      return <Text style={styles.statsText}>(no votes)</Text>
     } else {
-      return(<Text style={styles.statsText}>
-        Community: {_playerCounts(polls.userplayers.recommended[0])} -- Best:{' '}
-        {_playerCounts(polls.userplayers.best[0])}
-      </Text>)
+      return (
+        <Text style={styles.statsText}>
+          Community: {_playerCounts(polls.userplayers.recommended[0])} -- Best:{' '}
+          {_playerCounts(polls.userplayers.best[0])}
+        </Text>
+      )
     }
   }
 
@@ -303,7 +257,11 @@ const GameScreen = ({ navigation, route }) => {
     <ScrollView>
       <View style={styles.itemContainer}>
         <View style={styles.gameHeader}>{_renderMainImage(coverImages)}</View>
-        {_renderHeaderRank()}
+        <HeaderLinks
+          navigation={navigation}
+          details={details}
+          itemStats={itemStats}
+        />
         <View style={{ padding: 10, backgroundColor: '#000000' }}>
           {_renderHeaderName()}
         </View>
@@ -337,7 +295,10 @@ export default GameScreen
 GameScreen.propTypes = {
   ...navigationType,
   ...routeType({
-    game: PropTypes.object,
+    game: PropTypes.shape({
+      name: PropTypes.string,
+      objectId: PropTypes.string.isRequired,
+    }).isRequired,
     collectionId: PropTypes.string,
     collectionStatus: PropTypes.any,
     wishlistPriority: PropTypes.number,

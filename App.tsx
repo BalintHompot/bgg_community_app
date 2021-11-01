@@ -35,7 +35,6 @@ Sentry.init({
 //bootstraps ReactN global store
 setupStore()
 
-// @ts-ignore
 const App = () => {
   const [isReady, setIsReady] = useState(false)
   const [userDetails, setUserDetails] = useState(false)
@@ -48,8 +47,6 @@ const App = () => {
       try {
         // check if we can get the current user
         const { userid } = await getUserId()
-
-        console.log('ensureBGGSession', { userid })
 
         // if not, attempt to log 
         if (!userid) {
@@ -69,8 +66,8 @@ const App = () => {
   const fireUp = async () => {
     // load fonts, so they are ready for rendering
     await Font.loadAsync({
-      lato: require('./assets/Lato-Regular.ttf'),
-      'lato-bold': require('./assets/Lato-Bold.ttf'),
+      lato: require('./assets/Proxima-Nova-Reg.ttf'),
+      'lato-bold': require('./assets/Proxima-Nova-Bold.ttf'),
     })
 
     let valueName = await AsyncStorage.getItem('userName')

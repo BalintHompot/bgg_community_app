@@ -29,7 +29,7 @@ export default ({
   initialValues,
   onChangeValue,
 }: SelectListProps) => {
-  initialValues ||= multiple ? [] : [null]
+  if (!initialValues) initialValues = multiple ? [] : [null]
 
   const [listOpen, setListOpen] = useState(false)
   const [listSelection, setListSelection] = useState(

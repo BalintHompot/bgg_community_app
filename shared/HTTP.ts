@@ -21,6 +21,7 @@ export const fetchRaw = async (path, args = {}, headers = {}) => {
     )
   )
   const url = path.startsWith('http') ? path : `${DEFAULT_BGG_URL}${path}`
+
   // console.log(url, { credentials: 'include', ...args, headers })
   return fetch(url, { credentials: 'include', ...args, headers })
 }

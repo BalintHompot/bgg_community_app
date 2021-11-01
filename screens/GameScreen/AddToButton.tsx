@@ -6,12 +6,8 @@ import React from 'reactn'
 import styles from './styles'
 
 const AddToButton = ({ navigation: { navigate }, game, collectionDetails }) => {
-
-
-  console.log('AddToButton', collectionDetails)
   const { collectionId, collectionStatus, wishlistPriority } = collectionDetails
 
-  console.log( Object.values(collectionStatus))
   const inCollection = Object.values(collectionStatus).includes(true)
 
   const icon = inCollection ? (

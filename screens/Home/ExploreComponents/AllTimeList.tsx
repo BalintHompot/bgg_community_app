@@ -1,83 +1,13 @@
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { MessageType, showMessage } from 'react-native-flash-message';
-import React, { useEffect, useState } from 'reactn';
-import { Native as Sentry } from 'sentry-expo';
-import { getRatingColor } from '../../../shared/bgg/collection';
-import { fetchRaw } from '../../../shared/HTTP';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import DropDownPicker from 'react-native-dropdown-picker'
+import { MessageType, showMessage } from 'react-native-flash-message'
+import React, { useEffect, useState } from 'reactn'
+import { Native as Sentry } from 'sentry-expo'
+import Hexagon from '../../../components/Hexagon'
+import { fetchRaw } from '../../../shared/HTTP'
 import styleconstants, {
   layoutAnimation
-} from '../../../shared/styles/styleconstants';
-
-const Hexagon = (props) => {
-  return (
-    <View style={stylesHex.hexagon}>
-      <View
-        style={[
-          stylesHex.hexagonInner,
-          {
-            backgroundColor: props.color,
-            justifyContent: 'center',
-            alignItems: 'center',
-          },
-        ]}
-      >
-        <Text
-          style={{ color: 'white', fontFamily: styleconstants.primaryFontBold }}
-        >
-          {Math.round(props.rating * 10) / 10}
-        </Text>
-      </View>
-      <View
-        style={[stylesHex.hexagonBefore, { borderBottomColor: props.color }]}
-      />
-      <View style={[stylesHex.hexagonAfter, { borderTopColor: props.color }]} />
-    </View>
-  )
-}
-const stylesHex = StyleSheet.create({
-  hexagon: {
-    width: 40,
-    height: 22,
-  },
-  hexagonInner: {
-    width: 40,
-    height: 22,
-  },
-  hexagonAfter: {
-    position: 'absolute',
-    bottom: -10,
-    left: 0,
-    width: 0,
-    height: 0,
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 20,
-    borderRightColor: 'transparent',
-    borderTopWidth: 10,
-  },
-  hexagonBefore: {
-    position: 'absolute',
-    top: -10,
-    left: 0,
-    width: 0,
-    height: 0,
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 20,
-    borderRightColor: 'transparent',
-    borderBottomWidth: 10,
-  },
-})
+} from '../../../shared/styles/styleconstants'
 
 const AllTimeList = (props) => {
   const navigation = props.navigation
@@ -117,9 +47,8 @@ const AllTimeList = (props) => {
   useEffect(() => {
     if (categoryListSelection === null) return
 
-    const allTimeURL =
-      '/api/subdomaingamelists/' + categoryListSelection
- 
+    const allTimeURL = '/api/subdomaingamelists/' + categoryListSelection
+
     fetchRaw(allTimeURL)
       .then((allTimeList) => {
         //console.log("all time list is", allTimeList.status)
@@ -169,10 +98,7 @@ const AllTimeList = (props) => {
           style={{ width: 130, height: 130, borderRadius: 5 }}
         />
         <View style={{ position: 'absolute', top: 100, left: 12 }}>
-          <Hexagon
-            color={getRatingColor(props.item.rating)}
-            rating={props.item.rating}
-          />
+          <Hexagon rating={props.item.rating} />
         </View>
 
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

@@ -41,9 +41,7 @@ const PreviewFilters = (props) => {
 
   const toggleTags = (name) => {
     const currentLocal = localFilters[name]
-
     const allOptions = filterOptions[name]
-    console.log({ name, currentLocal, allOptions })
 
     if (currentLocal.length === allOptions.length) {
       setLocalFilters({ ...localFilters, [name]: [] })

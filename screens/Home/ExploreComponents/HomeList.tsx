@@ -1,87 +1,20 @@
-import {
-  FlatList,
-  Image, StyleSheet, Text, TouchableOpacity, View
-} from 'react-native'
-import { showMessage } from 'react-native-flash-message'
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import { MessageType, showMessage } from 'react-native-flash-message'
 import React, { useEffect, useState } from 'reactn'
-import * as Sentry from 'sentry-expo'
-import { getRatingColor } from '../../../shared/bgg/collection'
+import { Native as Sentry } from 'sentry-expo'
+import Hexagon from '../../../components/Hexagon'
 import styleconstants, {
   layoutAnimation
 } from '../../../shared/styles/styleconstants'
 
-const Hexagon = (props) => {
-  return (
-    <View style={stylesHex.hexagon}>
-      <View
-        style={[
-          stylesHex.hexagonInner,
-          {
-            backgroundColor: props.color,
-            justifyContent: 'center',
-            alignItems: 'center',
-          },
-        ]}
-      >
-        <Text
-          style={{ color: 'white', fontFamily: styleconstants.primaryFontBold }}
-        >
-          {Math.round(props.rating * 10) / 10}
-        </Text>
-      </View>
-      <View
-        style={[stylesHex.hexagonBefore, { borderBottomColor: props.color }]}
-      />
-      <View style={[stylesHex.hexagonAfter, { borderTopColor: props.color }]} />
-    </View>
-  )
-}
-const stylesHex = StyleSheet.create({
-  hexagon: {
-    width: 40,
-    height: 22,
-  },
-  hexagonInner: {
-    width: 40,
-    height: 22,
-  },
-  hexagonAfter: {
-    position: 'absolute',
-    bottom: -10,
-    left: 0,
-    width: 0,
-    height: 0,
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 20,
-    borderRightColor: 'transparent',
-    borderTopWidth: 10,
-  },
-  hexagonBefore: {
-    position: 'absolute',
-    top: -10,
-    left: 0,
-    width: 0,
-    height: 0,
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 20,
-    borderRightColor: 'transparent',
-    borderBottomWidth: 10,
-  },
-})
-
 const HomeList = (props) => {
   const navigation = props.navigation
 
-  const [refreshing, setRefreshing] = useState(false)
   const [homeList, setHomeList] = useState([])
   let [title, setTitle] = useState('Loading list')
   let [subTitle, setSubTitle] = useState('...')
 
-  const showFlash = (message, type = 'danger') => {
+  const showFlash = (message, type: MessageType = 'danger') => {
     showMessage({ message, type, icon: 'auto' })
   }
 
@@ -140,10 +73,7 @@ const HomeList = (props) => {
           style={{ width: 130, height: 130, borderRadius: 5 }}
         />
         <View style={{ position: 'absolute', top: 100, left: 12 }}>
-          <Hexagon
-            color={getRatingColor(props.item.rating)}
-            rating={props.item.rating}
-          />
+          <Hexagon rating={props.item.rating} />
         </View>
 
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -210,7 +140,7 @@ const HomeList = (props) => {
         {homeList.length > 0 ? (
           <FlatList
             data={homeList}
-            keyExtractor={({item})=>item.id}
+            keyExtractor={({ item }) => item.id}
             renderItem={({ item, index }) => {
               return (
                 <HomeItem item={item} index={index} navigation={navigation} />

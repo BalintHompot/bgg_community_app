@@ -1,25 +1,29 @@
 import { LayoutAnimation, Platform } from 'react-native'
 
-
 export default {
-    bggpurple: '#403c64',
-    bggorange: '#ff5001',
-    bggyellow: '#ffa400',
-    bggturquoise: '#63cfe3',
-    primaryFont: 'lato',
-    primaryFontBold: 'lato-bold'
-
+  bggpurple: '#403c64',
+  bggorange: '#ff5001',
+  bggyellow: '#ffa400',
+  bggturquoise: '#63cfe3',
+  primaryFont: 'lato',
+  primaryFontBold: 'lato-bold',
+  subtitleTextColor: '#666',
+  subtitleStrongColor: '#111',
+  placeholderBGColor: '#ccc',
 }
 
 export function layoutAnimation() {
-    if (Platform.OS === 'android') {
-        if (!global.layoutAnimationActive) {
-            global.layoutAnimationActive = true;
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut
-                , () => { global.layoutAnimationActive = false; });
+  if (Platform.OS === 'android') {
+    if (!global.layoutAnimationActive) {
+      global.layoutAnimationActive = true
+      LayoutAnimation.configureNext(
+        LayoutAnimation.Presets.easeInEaseOut,
+        () => {
+          global.layoutAnimationActive = false
         }
-    } else {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      )
     }
-
+  } else {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+  }
 }
