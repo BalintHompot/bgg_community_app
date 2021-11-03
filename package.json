@@ -80,6 +80,7 @@
     "expo-image-manipulator": "~7.0.0",
     "expo-image-picker": "~7.0.0",
     "expo-screen-orientation": "~2.1.0",
+    "expo-secure-store": "~9.3.0",
     "himalaya": "^1.1.0",
     "next-frame": "^0.2.3",
     "prop-types": "^15.6.2",
@@ -113,6 +114,7 @@
     "react-native-screens": "~1.0.0-alpha.23",
     "react-native-searchable-dropdown": "^1.1.1",
     "react-native-simple-radio-button": "^2.7.4",
+    "react-native-sliding-up-down-panels": "^1.0.0",
     "react-native-swipeout": "^2.3.6",
     "react-native-tab-view": "^2.16.0",
     "react-native-tag-select": "^2.0.0",
@@ -123,7 +125,6 @@
     "sentry-expo": "~3.1.4",
     "throttle-debounce": "^1.0.1",
     "xml-js": "^1.6.11",
-    "xpath": "0.0.32",
-    "expo-secure-store": "~9.3.0"
+    "xpath": "0.0.32"
   }
 }
